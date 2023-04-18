@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "dao_8yg_backend": {
+      "main": "src/dao_8yg_backend/main.mo",
+      "type": "motoko"
+    },
+    "dao_8yg_frontend": {
+      "dependencies": [
+        "dao_8yg_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/dao_8yg_frontend/src/index.html"
+      },
+      "source": [
+        "src/dao_8yg_frontend/assets",
+        "dist/dao_8yg_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
