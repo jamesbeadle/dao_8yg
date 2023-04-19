@@ -2,7 +2,12 @@
   "name": "dao_8yg_frontend",
   "version": "0.1.0",
   "description": "Internet Computer starter application",
-  "keywords": ["Internet Computer", "Motoko", "JavaScript", "Canister"],
+  "keywords": [
+    "Internet Computer",
+    "Motoko",
+    "JavaScript",
+    "Canister"
+  ],
   "scripts": {
     "build": "webpack",
     "prebuild": "npm run generate",
@@ -44,6 +49,7 @@
   "dependencies": {
     "bootstrap": "^4.6.0",
     "dotenv": "^16.0.3",
+    "ic-stoic-identity": "^2.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.4",
     "react-dom": "^18.2.0",
