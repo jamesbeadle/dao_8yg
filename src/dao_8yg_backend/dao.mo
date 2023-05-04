@@ -1,3 +1,4 @@
+/*
 import { setTimer; recurringTimer } = "mo:base/Timer";
 import { print } = "mo:base/Debug";
 import Array "mo:base/Array";
@@ -34,7 +35,9 @@ actor DAO {
 
 //all dao functions
 
-//verify user NFTs
+//stake nft
+
+//unstake nft
 
 //deposit user funds
 
@@ -59,4 +62,4 @@ actor DAO {
 //check proposal voting period ended
 
 //check that voter has nft at time of raising proposal, voting and when rewards are distributed
- 
+ */

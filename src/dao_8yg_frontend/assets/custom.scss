@@ -1,0 +1,11 @@
+// Custom.scss
+
+//$primary: red; // Your custom primary color
+//$secondary: #ee6f57; // Your custom secondary color
+
+.navbar-brand, .nav-link{
+    color: whitesmoke !important;
+}
+
+ 
+@import '~bootstrap/scss/bootstrap';

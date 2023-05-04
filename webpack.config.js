@@ -4,6 +4,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
+const network =
+process.env.DFX_NETWORK ||
+(process.env.NODE_ENV === "production" ? "ic" : "local");
+
 function initCanisterEnv() {
   let localCanisters, prodCanisters;
   try {
@@ -21,10 +25,6 @@ function initCanisterEnv() {
     console.log("No production canister_ids.json found. Continuing with local");
   }
 
-  const network =
-    process.env.DFX_NETWORK ||
-    (process.env.NODE_ENV === "production" ? "ic" : "local");
-
   const canisterConfig = network === "local" ? localCanisters : prodCanisters;
 
   return Object.entries(canisterConfig).reduce((prev, current) => {
@@ -35,6 +35,8 @@ function initCanisterEnv() {
   }, {});
 }
 const canisterEnvVariables = initCanisterEnv();
+
+const internetIdentityUrl = network === "local" ? `http://localhost:8080/?canisterId=${canisterEnvVariables["INTERNET_IDENTITY_CANISTER_ID"]}` : `https://identity.ic0.app`
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -95,6 +97,21 @@ module.exports = {
             },
           },
         ],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          "style-loader",
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, "node_modules")],
+              },
+            },
+          },
+        ],
       }
     ]
   },
@@ -105,6 +122,7 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
+      II_URL: internetIdentityUrl,
       ...canisterEnvVariables,
     }),
     new webpack.ProvidePlugin({

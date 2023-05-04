@@ -1,5 +1,14 @@
 
+@font-face {
+  font-family: 'Play';
+  src: url('Play.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  background-color: #150333;
+  background: linear-gradient(to bottom, #000000, #150333);
+  transition: background ease-in-out 300ms, color ease-in-out 150ms, padding ease-in-out 150ms;
   color: white;
+  font-family: 'Play', sans-serif !important;
 }

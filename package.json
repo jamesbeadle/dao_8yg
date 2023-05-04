@@ -1,12 +1,10 @@
 {
   "name": "dao_8yg_frontend",
   "version": "0.1.0",
-  "description": "Internet Computer starter application",
+  "description": "8YG DAO",
   "keywords": [
-    "Internet Computer",
-    "Motoko",
-    "JavaScript",
-    "Canister"
+    "8 Years Gang",
+    "FAO"
   ],
   "scripts": {
     "build": "webpack",
@@ -16,9 +14,11 @@
     "generate": "dfx generate dao_8yg_backend"
   },
   "devDependencies": {
-    "@dfinity/agent": "0.15.5",
-    "@dfinity/candid": "0.15.5",
-    "@dfinity/principal": "0.15.5",
+    "@dfinity/agent": "0.15.6",
+    "@dfinity/auth-client": "^0.15.6",
+    "@dfinity/candid": "0.15.6",
+    "@dfinity/identity": "^0.15.6",
+    "@dfinity/principal": "0.15.6",
     "assert": "2.0.0",
     "buffer": "6.0.3",
     "copy-webpack-plugin": "^11.0.0",
@@ -26,7 +26,9 @@
     "events": "3.3.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "5.5.0",
+    "node-sass": "^8.0.0",
     "process": "0.11.10",
+    "sass-loader": "^13.2.2",
     "stream-browserify": "3.0.0",
     "style-loader": "^3.3.2",
     "terser-webpack-plugin": "^5.3.3",
