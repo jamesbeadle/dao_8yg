@@ -9,6 +9,30 @@
 body {
   background: linear-gradient(to bottom, #000000, #150333);
   transition: background ease-in-out 300ms, color ease-in-out 150ms, padding ease-in-out 150ms;
-  color: white;
+  color: whitesmoke !important;
   font-family: 'Play', sans-serif !important;
 }
+
+.navbar-toggler-icon{
+  color: whitesmoke !important;
+}
+
+.card{
+  background: linear-gradient(to bottom, #F3E77B, #150333);
+  color: #150333 !important;
+}
+
+.card-header{
+  color: #150333 !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.card-text{
+  font-size: 20pt;
+}
+
+.navbar-light .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27%3e%3cpath stroke=%27rgba%28255, 255, 255, 1%29%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3e%3c/svg%3e") !important;
+}
+

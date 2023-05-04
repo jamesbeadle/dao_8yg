@@ -26,8 +26,8 @@ const MyNavbar = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
-          <Nav.Link as={Link} to="/" onClick={() => setExpanded(false)} className="nav-link">
-            Coming Soon
+          <Nav.Link as={Link} to="/DAOWallet" onClick={() => setExpanded(false)} className="nav-link">
+            8YG Wallet
           </Nav.Link>
         </Navbar.Collapse>
       </Container>

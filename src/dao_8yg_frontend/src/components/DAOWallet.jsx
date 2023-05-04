@@ -4,7 +4,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import GangImage from '../../assets/8yg_3.png';
 
 
-const Home = () => {
+const DAOWallet = () => {
   
   const [isLoading, setIsLoading] = useState(true);
   
@@ -26,7 +26,7 @@ const Home = () => {
         <Row>
           <Col md={6}>
             <Card className="mb-4">
-              <Card.Header><h2 className="mt-2 mb-2 card-header">8 Years Gang DAO</h2></Card.Header>
+              <Card.Header><h2 className="mt-2 mb-2 card-header">8 Years Gang Wallet</h2></Card.Header>
               <Card.Body>
                 <img src={GangImage} alt="8yg" className='mt-2 mb-4' style={{ maxWidth: '100%', maxHeight: '100%', marginRight: '10px' }} />
               </Card.Body>
@@ -35,15 +35,9 @@ const Home = () => {
           <Col md={6}>
             <Row>
               <Col md={12}>
-                <h1>Welcome</h1>
-                <p className='mt-4 mb-4'>8 Years Gang NFT holders will be able to stake their NFTs within this DAO. Initially this will enable them to participate in governance of the 8YG wallet and receive rewards based on the DAO's profit.</p>
-                
-                <LinkContainer className="mt-3" to={`/DAOWallet`}>
-                  <Button className="btn custom-button btn-sm mb-4">View 8YG Wallet</Button>
-                </LinkContainer>
-                
-                <p className='mb-4'>We aim to introduce various mechanisms to maximise the rewards associated with the gang members you own, check back here in the future for further updates.</p>
-              </Col>
+                <h1>The DAO Wallet</h1>
+                <p className='mt-4 mb-4'>A list of the DAO's NFTs will appear here soon.</p>
+                </Col>
             </Row>
           </Col>
         </Row>
@@ -52,4 +46,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default DAOWallet;

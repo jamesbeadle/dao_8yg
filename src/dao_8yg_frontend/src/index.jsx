@@ -7,6 +7,7 @@ import Logo from '../assets/logo.png';
 import { AuthProvider } from "./contexts/AuthContext";
 import MyNavbar from './components/shared/navbar';
 import MyFooter from './components/shared/footer';
+import DAOWallet from "./components/DAOWallet";
 
 const PrivateWindowFallback = () => {
   return (
@@ -62,6 +63,7 @@ const App = () => {
           <MyNavbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/DAOWallet" element={<DAOWallet />} />
             </Routes>
           <MyFooter />
         </div>

@@ -8,6 +8,7 @@ const MyFooter = () => {
       <Container>
         <Row>
           <Col className="text-center">
+            8 Years Gang
           </Col>
         </Row>
       </Container>
