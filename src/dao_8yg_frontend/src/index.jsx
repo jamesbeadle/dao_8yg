@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import MyNavbar from './components/shared/navbar';
 import MyFooter from './components/shared/footer';
 import DAOWallet from "./components/DAOWallet";
+import BannerTop from "./components/shared/banner";
 
 const PrivateWindowFallback = () => {
   return (
@@ -21,7 +22,6 @@ const PrivateWindowFallback = () => {
 
 const App = () => {
 
-  
   const [isPrivateWindow, setIsPrivateWindow] = React.useState(false);
 
   React.useEffect(() => {
@@ -59,6 +59,9 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
+        
+        <BannerTop />
+      
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
           <MyNavbar />
           <Routes>

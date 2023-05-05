@@ -36,3 +36,26 @@ body {
   background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27%3e%3cpath stroke=%27rgba%28255, 255, 255, 1%29%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3e%3c/svg%3e") !important;
 }
 
+.logo-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000; /* Adjust this value based on your needs */
+  cursor: pointer;
+}
+
+.banner-container img {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .banner-container {
+    overflow: hidden;
+    height: 200px; /* Adjust the height value to crop the desired amount */
+  }
+
+  .banner-container img {
+    position: relative;
+    top: -175px; /* Adjust the top value to position the image correctly */
+  }
+}

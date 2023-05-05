@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { Link, useNavigate } from "react-router-dom";
-import LogoSmall from '../../../assets/logo.png';
 
 
 const MyNavbar = () => {
@@ -22,8 +21,7 @@ const MyNavbar = () => {
     <Navbar expand="lg">
       <Container>
         <Navbar.Brand href="/">
-          <img src={LogoSmall} alt="8yg" style={{ maxWidth: '50px', maxHeight: '100%', marginRight: '10px' }} />
-        </Navbar.Brand>
+        </Navbar.Brand>  
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
           <Nav.Link as={Link} to="/DAOWallet" onClick={() => setExpanded(false)} className="nav-link">
