@@ -59,3 +59,10 @@ body {
     top: -175px; /* Adjust the top value to position the image correctly */
   }
 }
+
+
+.social-icon {
+  width: 32px;
+  height: 32px;
+  margin: 0 10px;
+}

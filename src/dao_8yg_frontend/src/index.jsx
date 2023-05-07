@@ -9,6 +9,10 @@ import MyNavbar from './components/shared/navbar';
 import MyFooter from './components/shared/footer';
 import DAOWallet from "./components/DAOWallet";
 import BannerTop from "./components/shared/banner";
+import Admin from "./components/Admin";
+import Proposals from "./components/Proposals";
+import Tokenomics from "./components/Tokenomics";
+import Profile from "./components/Profile";
 
 const PrivateWindowFallback = () => {
   return (
@@ -66,7 +70,11 @@ const App = () => {
           <MyNavbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/Admin" element={<Admin />} />
+            <Route path="/Proposals" element={<Proposals />} />
             <Route path="/DAOWallet" element={<DAOWallet />} />
+            <Route path="/Tokenomics" element={<Tokenomics />} />
+            <Route path="/Profile" element={<Profile />} />
             </Routes>
           <MyFooter />
         </div>
