@@ -10,10 +10,19 @@ module Types {
         nfts: [NFT];
     };
 
+    type TokenIndex = Nat32;
+    type AccountIdentifier__1 = Text;
+
+    public type Record = {
+        _0 : TokenIndex;
+        _1 : AccountIdentifier__1;
+    };
+
     public type NFT = {
-        nftid: Nat16;
-        rarity: Nat8;
-        voting_power: Nat8;
+        tokenIndex: TokenIndex;
+        accountIdentifier: AccountIdentifier__1;
+        canisterId: Text;
+        tokenId: Text;
     };
 
     public type ProposalState = {

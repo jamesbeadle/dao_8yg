@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import WalletImage from '../../assets/dao_wallet.jpg';
+import { StoicIdentity } from "ic-stoic-identity";
+import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
 
 
 const DAOWallet = () => {
@@ -9,11 +11,45 @@ const DAOWallet = () => {
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
+
+    //checkIdentity();
+
     const fetchData = async () => {
+      var nftWallet = await backend.getNFTWallet();
+      console.log(nftWallet);
+      
+      var cycles = await backend.getCycles();
+      console.log(Number(cycles));
+      
       setIsLoading(false);
     };
     fetchData();
   }, []);
+
+  const checkIdentity = async () => {
+    StoicIdentity.load().then(async identity => {
+      if (identity !== false) {
+        //ID is a already connected wallet!
+      } else {
+        //No existing connection, lets make one!
+        identity = await StoicIdentity.connect();
+      }
+      
+      //Lets display the connected principal!
+      console.log(identity.getPrincipal().toText());
+      
+      //Create an actor canister
+      const actor = Actor.createActor(idlFactory, {
+        agent: new HttpAgent({
+          identity,
+        }),
+        canisterId,
+      });
+      
+      //Disconnect after
+      StoicIdentity.disconnect();
+    })
+  };
 
   return (
     isLoading ? (
