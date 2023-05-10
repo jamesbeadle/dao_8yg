@@ -95,15 +95,19 @@ module {
 
     public func computeExtTokenIdentifier(principal: Principal, index: Nat32) : async Text {
       var identifier : [Nat8] = [10, 116, 105, 100]; //b"\x0Atid"
-      identifier := Array.append(identifier, Blob.toArray(Principal.toBlob(principal)));
+      var principalBlob : [Nat8] = Blob.toArray(Principal.toBlob(principal));
+
+      let buffer = Buffer.fromArray<Nat8>(identifier);
+      buffer.append(Buffer.fromArray(principalBlob));
+
       var rest : Nat32 = index;
       for (i in Iter.revRange(3, 0)) {
         let power2 = Nat32.fromNat(Int.abs(Int.pow(2, (i * 8))));
         let val : Nat32 = rest / power2;
-        identifier := Array.append(identifier, [Nat8.fromNat(Nat32.toNat(val))]);
+        buffer.append(Buffer.fromArray([Nat8.fromNat(Nat32.toNat(val))]));
         rest := rest - (val * power2);
       };
-      return Principal.toText(Principal.fromBlob(Blob.fromArray(identifier)));
+      return Principal.toText(Principal.fromBlob(Blob.fromArray(Buffer.toArray(buffer))));
     };
 
 

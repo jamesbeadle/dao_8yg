@@ -68,8 +68,6 @@ const DAOWallet = () => {
               <Col md={12}>
                 <h1>The DAO Wallet</h1>
                 <p className='mt-4 mb-4'>A list of the DAO's NFTs will appear here soon.</p>
-                <p className='mt-4 mb-4'>Filter by collection.</p>
-                <p className='mt-4 mb-4'>Filter by for sale or not.</p>
                 </Col>
             </Row>
           </Col>
@@ -80,3 +78,11 @@ const DAOWallet = () => {
 };
 
 export default DAOWallet;
+
+/*
+
+
+                <p className='mt-4 mb-4'>Filter by collection.</p>
+                <p className='mt-4 mb-4'>Filter by for sale or not.</p>
+
+                */
