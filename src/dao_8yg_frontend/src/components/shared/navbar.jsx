@@ -20,8 +20,7 @@ const MyNavbar = () => {
 
   return (
     <Navbar expand="lg">
-      <Container>
-        <Navbar.Brand href="/">
+      <Navbar.Brand href="/">
         </Navbar.Brand>  
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
@@ -29,14 +28,16 @@ const MyNavbar = () => {
             DAO Wallet
           </Nav.Link>
           {isAuthenticated ? (
-            <Nav.Link as={Link} to="/Profile" onClick={() => setExpanded(false)} className="nav-link">
-              Profile
-            </Nav.Link>
+            <>
+              <Nav.Link as={Link} to="/Profile" onClick={() => setExpanded(false)} className="nav-link">
+                Profile
+              </Nav.Link>
+              <Button className="custom-button" onClick={() => { logout(); setExpanded(false); }}>Disconnect</Button>
+            </>
           ) : (
             <Button className="custom-button" onClick={() => { login(); setExpanded(false); }}>Connect</Button>
           )}
         </Navbar.Collapse>
-      </Container>
     </Navbar>
   );
 };

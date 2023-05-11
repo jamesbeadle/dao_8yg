@@ -8,7 +8,6 @@ const BannerTop = () => {
   const navigate = useNavigate();
 
   const loadHomepage = () => {
-    console.log("here")
     navigate("/");
   };
 
