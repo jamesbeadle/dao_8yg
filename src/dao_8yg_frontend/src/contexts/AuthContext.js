@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
         setIsAdmin(userIsAdmin);
       } else {
         //No existing connection, lets make one!
+        setIsAuthenticated(false);
         setIsAdmin(false);
-        identity = await StoicIdentity.connect();
       }
       setIdentity(identity);
       setLoading(false);
