@@ -3,6 +3,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -27,6 +28,13 @@ const MyNavbar = () => {
           <Nav.Link as={Link} to="/DAOWallet" onClick={() => setExpanded(false)} className="nav-link">
             DAO Wallet
           </Nav.Link>
+          {isAuthenticated ? (
+            <Nav.Link as={Link} to="/Profile" onClick={() => setExpanded(false)} className="nav-link">
+              Profile
+            </Nav.Link>
+          ) : (
+            <Button className="custom-button" onClick={() => { login(); setExpanded(false); }}>Connect</Button>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

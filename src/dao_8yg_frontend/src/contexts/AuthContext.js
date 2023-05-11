@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { AuthClient } from "@dfinity/auth-client";
 import { Actor } from "@dfinity/agent";
-import { DAO8YG_backend as dao_8yg_backend } from '../../../declarations/dao_8yg_backend';
+
+import { dao_8yg_backend as dao_8yg_backend_actor } from '../../../declarations/dao_8yg_backend';
+import { StoicIdentity } from 'ic-stoic-identity';
 
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authClient, setAuthClient] = useState(null);
+  const [identity, setIdentity] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -33,67 +35,70 @@ export const AuthProvider = ({ children }) => {
   };
  
   useEffect(() => {
-    const initAuthClient = async () => {
-      try{
-        const authClient = await AuthClient.create({
-          idleOptions: {
-            idleTimeout: 1000 * 60 * 60
-          }
-        });
-        const isLoggedIn = await checkLoginStatus(authClient);
-        
-        if (isLoggedIn) {
-          const identity = authClient.getIdentity();
-          Actor.agentOf(DAO8YG_backend).replaceIdentity(identity);
-          const userIsAdmin = await DAO8YG_backend.isAdmin();
-          setIsAdmin(userIsAdmin);
-        } else {
-          setIsAdmin(false);
-        }
-        setAuthClient(authClient);
+    StoicIdentity.load().then(async identity => {
+      console.log(identity)
+      if (identity !== false) {
+        //ID is a already connected wallet!
+        setIsAuthenticated(true);
+        Actor.agentOf(dao_8yg_backend_actor).replaceIdentity(identity);
+        const userIsAdmin = await dao_8yg_backend_actor.isAdmin();
+        setIsAdmin(userIsAdmin);
+      } else {
+        //No existing connection, lets make one!
+        setIsAdmin(false);
+        identity = await StoicIdentity.connect();
       }
-      catch (error){
-        console.error('Error during AuthClient initialization:', error);
-        await deleteIndexedDB('auth-client-db');
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-    initAuthClient();
+      setIdentity(identity);
+      setLoading(false);
+      
+    });
+
   }, []);
 
   useEffect(() => {
-    if (!authClient) return;
+    if (!identity) return;
 
     const interval = setInterval(() => {
-      checkLoginStatus(authClient);
+      checkLoginStatus(identity);
     }, 60000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [authClient]);
+  }, [identity]);
+
+  
 
   const login = async () => {
-    await authClient.login({
-      identityProvider: process.env.II_URL,
-      //maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
-      maxTimeToLive: BigInt(1 * 1 * 1 * 60 * 1000 * 1000 * 1000),
-      onSuccess: async () => {
-        setIsAuthenticated(true);
-        const identity = authClient.getIdentity();
-        Actor.agentOf(DAO8YG_backend).replaceIdentity(identity);
-        const userIsAdmin = await DAO8YG_backend.isAdmin();
-        setIsAdmin(userIsAdmin);
+    await StoicIdentity.load().then(async identity => {
+
+      if (identity !== false) {
+        //ID is a already connected wallet!
+      } else {
+        //No existing connection, lets make one!
+        identity = await StoicIdentity.connect();
       }
+    
+      setIdentity(identity);
+      setIsAuthenticated(true);
+      Actor.agentOf(dao_8yg_backend_actor).replaceIdentity(identity);
+      const userIsAdmin = await dao_8yg_backend_actor.isAdmin();
+      setIsAdmin(userIsAdmin);
+      
     });
   };
 
   const logout = async () => {
-    await authClient.logout();
-    setIsAuthenticated(false);
-    setIsAdmin(false);
+    try {
+      await StoicIdentity.disconnect();
+    } catch (error) {
+      console.error('Error during StoicIdentity disconnect:', error);
+    } finally {
+      localStorage.removeItem('identity');
+      setIdentity(null);
+      setIsAuthenticated(false);
+      setIsAdmin(false);
+    }
   };
 
   const checkLoginStatus = async (client) => {
@@ -126,9 +131,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
   return (
-    <AuthContext.Provider value={ { authClient, isAdmin, isAuthenticated, setIsAdmin, setIsAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ identity, isAdmin, isAuthenticated, setIsAdmin, setIsAuthenticated, login, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );

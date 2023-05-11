@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import WalletImage from '../../assets/dao_wallet.jpg';
 import LogoImage from '../../assets/logo.png';
 
+import { AuthContext } from "../contexts/AuthContext";
 
 const Profile = () => {
   
   const [isLoading, setIsLoading] = useState(true);
+  const { identity } = useContext(AuthContext);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -32,11 +34,9 @@ const Profile = () => {
             <Row>
               <Col md={12}>
                 <h1>Profile Page</h1>
-                <p className='mt-4 mb-4'>Profile page to allow users to stake and unstake their NFTs. It will show the user the NFTs they have staked.</p>
-                <p className='mt-4 mb-4'>It will show the user their proposal voting history.</p>
-                <p className='mt-4 mb-4'>It will show the user their deposit address for ICP.</p>
-                <p className='mt-4 mb-4'>It will show the user their $8YG Balance, allow them to withdraw it to an account.</p>
-                </Col>
+                <p>User Principal: {identity.getPrincipal().toText()}</p>
+               
+              </Col>
             </Row>
           </Col>
         </Row>
@@ -46,3 +46,12 @@ const Profile = () => {
 };
 
 export default Profile;
+
+
+/* 
+                <p className='mt-4 mb-4'>Profile page to allow users to stake and unstake their NFTs. It will show the user the NFTs they have staked.</p>
+                <p className='mt-4 mb-4'>It will show the user their proposal voting history.</p>
+                <p className='mt-4 mb-4'>It will show the user their deposit address for ICP.</p>
+                <p className='mt-4 mb-4'>It will show the user their $8YG Balance, allow them to withdraw it to an account.</p>
+                
+                */
