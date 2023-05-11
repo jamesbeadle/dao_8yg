@@ -9,7 +9,7 @@ import MyNavbar from './components/shared/navbar';
 import MyFooter from './components/shared/footer';
 import DAOWallet from "./components/DAOWallet";
 import BannerTop from "./components/shared/banner";
-import Admin from "./components/Admin";
+import Admin from "./components/admin/Admin";
 import Proposals from "./components/Proposals";
 import Tokenomics from "./components/Tokenomics";
 import Profile from "./components/Profile";

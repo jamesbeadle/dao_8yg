@@ -13,6 +13,7 @@ const MyNavbar = () => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
+    console.log(isAdmin)
     if (!isAuthenticated) {
       navigate("/");
     }
@@ -24,6 +25,12 @@ const MyNavbar = () => {
         </Navbar.Brand>  
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
+        
+          {isAuthenticated && isAdmin && 
+            <Nav.Link as={Link} to="/Admin" onClick={() => setExpanded(false)} className="nav-link">
+              Admin
+            </Nav.Link>
+          }
           <Nav.Link as={Link} to="/DAOWallet" onClick={() => setExpanded(false)} className="nav-link">
             DAO Wallet
           </Nav.Link>
