@@ -1,5 +1,20 @@
 
 module Types {
+
+    
+    public type Error = {
+        #NotFound;
+        #AlreadyExists;
+        #NotAuthorized;
+        #NotAllowed;
+        #DecodeError;
+    };
+
+    public type Collection = {
+        id: Nat16;
+        name: Text;
+        canisterId: Text; 
+    };
     
     public type Tokens = {
         amount_e8s: Nat64;

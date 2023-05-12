@@ -6,14 +6,13 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 const DeleteCollectionModal = ({ show, onHide, setIsLoading, collectionToDelete }) => {
 
-  const { authClient } = useContext(AuthContext);
+  const { identity } = useContext(AuthContext);
   
   const handleSubmit = async () => {
     setIsLoading(true);
 
-    const identity = authClient.getIdentity();
-    Actor.agentOf(football_god_backend_actor).replaceIdentity(identity);
-    await football_god_backend_actor.deleteCollection(collectionToDelete);
+    Actor.agentOf(backend).replaceIdentity(identity);
+    await backend.deleteCollection(collectionToDelete);
 
     onHide();
   };

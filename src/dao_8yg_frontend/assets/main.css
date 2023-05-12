@@ -66,3 +66,12 @@ body {
   height: 32px;
   margin: 0 10px;
 }
+
+
+.custom-dropdown {
+  position: static !important;
+}
+
+.custom-dropdown .dropdown-menu {
+  position: absolute !important;
+}

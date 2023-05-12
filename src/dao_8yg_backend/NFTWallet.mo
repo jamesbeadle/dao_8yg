@@ -10,12 +10,83 @@ import Debug "mo:base/Debug";
 import Blob "mo:base/Blob";
 import Int "mo:base/Int";
 import Principal "mo:base/Principal";
+import Result "mo:base/Result";
 
 module {
     
   public class NFTWallet(){
     
     private let daoWallet: Text = "0fa2901a7d5b36b1412ae14fc8c71ae424a7977930f59d230a0eb494f5e1b3c6";
+
+    
+    private var collections = List.nil<T.Collection>();
+    private var nextCollectionId : Nat16 = 1;
+
+    public func getCollections() : [T.Collection] {
+        return List.toArray(List.map<T.Collection, T.Collection>(collections, func (collection: T.Collection): T.Collection {
+            return {
+                id = collection.id;
+                name = collection.name;
+                canisterId = collection.canisterId;
+            };
+        }));
+    };
+
+    public func getCollection(collectionId: Nat16) : ?T.Collection {
+        let foundCollection = List.find<T.Collection>(collections, func (collection: T.Collection): Bool {
+            return collection.id == collectionId;
+        });
+
+        switch (foundCollection) {
+            case (null) { return null; };
+            case (?collection) {
+                let collectionInfo = {
+                    id = collection.id;
+                    name = collection.name;
+                    canisterId = collection.canisterId;
+                };
+                return ?collectionInfo;
+            };
+        };
+    };
+
+    
+    public func addCollection(name : Text, canisterId : Text) : Result.Result<(), T.Error> {
+        
+        let id = nextCollectionId;
+        let newCollection : T.Collection = {
+          id = id;
+          name = name;
+          canisterId = canisterId;
+        };
+
+        var newCollectionList = List.nil<T.Collection>();
+        newCollectionList := List.push(newCollection, newCollectionList);
+
+        collections := List.append(collections, newCollectionList);
+        
+        nextCollectionId := nextCollectionId + 1;
+        return #ok(());
+    };
+
+    public func updateCollection(id : Nat16, newName : Text, newCanisterId : Text) : Result.Result<(), T.Error> {
+    
+        collections := List.map<T.Collection, T.Collection>(collections,
+            func (collection: T.Collection): T.Collection {
+                if (collection.id == id) {
+                { id = collection.id; name = newName; canisterId = newCanisterId }
+                } 
+                else { collection }
+        });
+
+        return #ok(());
+    };
+
+    public func deleteCollection(id : Nat16) : Result.Result<(), T.Error> {
+        
+        collections := List.filter(collections, func(collection: T.Collection): Bool { collection.id != id });
+        return #ok(());
+    };
     
     public func getCyclesBalance(canisterId: Text) : async Nat {
 
