@@ -3,6 +3,7 @@ import List "mo:base/List";
 import Nat8 "mo:base/Nat8";
 import Nat16 "mo:base/Nat16";
 import Nat32 "mo:base/Nat32";
+import Nat64 "mo:base/Nat64";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Buffer "mo:base/Buffer";
@@ -21,6 +22,10 @@ module {
     
     private var collections = List.nil<T.Collection>();
     private var nextCollectionId : Nat16 = 1;
+
+    public func getNextCollectionId() : Nat16 {
+        return nextCollectionId;
+    };
     
     public func setData(stable_collections: [T.Collection], stable_collectionId : Nat16){
         collections := List.fromArray(stable_collections);
@@ -102,7 +107,7 @@ module {
       return await nft_canister.availableCycles();
     };
 
-    public func get8YGNFTs(canisterId: Text) : async [T.NFT] {
+    public func getCollectionNFTs(canisterId: Text, page: Int, pageSize: Int) : async T.DAOWalletDTO {
 
       let nft_canister = actor (canisterId): actor { 
         getRegistry: () -> async [(Nat32, Text)];
@@ -112,9 +117,36 @@ module {
 
       let registry = Array.map<(Nat32, Text), T.NFT>(registryRecords, updateFn);
 
-      return registry;
+      let filteredRegistry = Array.filter<T.NFT>(registry, func (nft: T.NFT) : Bool {
+          return nft.accountIdentifier == daoWallet;
+      });
 
+      let buffer = Buffer.fromArray<T.NFT>([]);
+      var index = 0;
+      let startIndex = (page - 1) * pageSize;
+      let endIndex = page * pageSize;
+      for (nft in Iter.fromArray<T.NFT>(filteredRegistry)) {
+        if (index >= startIndex and index < endIndex) {
+              buffer.add({
+                  tokenIndex = nft.tokenIndex;
+                  accountIdentifier = nft.accountIdentifier;
+                  canisterId = canisterId;
+                  tokenId = await computeExtTokenIdentifier(Principal.fromText(canisterId), nft.tokenIndex);
+              });
+          };
+          index := index + 1;
+      };
+
+      let dto: T.DAOWalletDTO = {
+        nfts = Buffer.toArray(buffer);
+        totalEntries = Nat64.fromNat(Array.size(filteredRegistry));
+      };
+
+      return dto;
     };
+
+
+    
 
     public func getWalletNFTs(canisterIds: [Text]) : async [T.NFT] {
 
@@ -185,8 +217,6 @@ module {
       };
       return Principal.toText(Principal.fromBlob(Blob.fromArray(Buffer.toArray(buffer))));
     };
-
-
 
 
 

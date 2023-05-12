@@ -1,72 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import WalletImage from '../../assets/dao_wallet.jpg';
-import { StoicIdentity } from "ic-stoic-identity";
+import React, { useState, useEffect, useContext } from 'react';
+import { Container, Row, Col, Card, Spinner, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
 import CustomSVG from './CustomSVG';
+import { AuthContext } from "../contexts/AuthContext";
+import { Actor } from "@dfinity/agent";
 
 
 const DAOWallet = () => {
   
+  const { identity } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [nfts, setNfts] = useState([]);
+  const [collections, setCollections] = useState(null);
+  const [viewData, setViewData] = useState(null);
+  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [page, setPage] = useState(1);
+  const count = 9;
+
+  const fetchCollections = async () => {
+    Actor.agentOf(backend).replaceIdentity(identity);
+    var collections = await backend.getCollections();
+    setCollections(collections);
+    setSelectedCollection(collections[0]);
+  };
+
+  const fetchNFTs = async () => {
+    Actor.agentOf(backend).replaceIdentity(identity);
+    var nftWallet = await backend.getCollectionNFTs(Number(selectedCollection.id), Number(page), Number(count));
+    setViewData(nftWallet);
+  };
   
   useEffect(() => {
-
-    //checkIdentity();
-
     const fetchData = async () => {
-      var nftWallet = await backend.getNFTWallet();
-
-      /*var nftWallet = [
-        {
-            "tokenId": "hls6x-4ikor-uwiaa-aaaaa-buaf4-uaqca-aaant-a",
-            "tokenIndex": 870,
-            "canisterId": "tskpj-aiaaa-aaaag-qaxsq-cai",
-            "accountIdentifier": "0fa2901a7d5b36b1412ae14fc8c71ae424a7977930f59d230a0eb494f5e1b3c6"
-        },
-        {
-            "tokenId": "djtqm-hakor-uwiaa-aaaaa-deaha-qaqca-aaaae-q",
-            "tokenIndex": 9,
-            "canisterId": "buja2-4iaaa-aaaam-qa4ca-cai",
-            "accountIdentifier": "0fa2901a7d5b36b1412ae14fc8c71ae424a7977930f59d230a0eb494f5e1b3c6"
-        }
-    ];
-    */
-
-
-      setNfts(nftWallet);
-      console.log(nftWallet);
-      
-      setIsLoading(false);
+      await fetchCollections();
     };
     fetchData();
   }, []);
 
-  const checkIdentity = async () => {
-    StoicIdentity.load().then(async identity => {
-      if (identity !== false) {
-        //ID is a already connected wallet!
-      } else {
-        //No existing connection, lets make one!
-        identity = await StoicIdentity.connect();
-      }
-      
-      //Lets display the connected principal!
-      console.log(identity.getPrincipal().toText());
-      
-      //Create an actor canister
-      const actor = Actor.createActor(idlFactory, {
-        agent: new HttpAgent({
-          identity,
-        }),
-        canisterId,
-      });
-      
-      //Disconnect after
-      StoicIdentity.disconnect();
-    })
+  useEffect(() => {
+    setIsLoading(true);
+    if(selectedCollection == null){
+      return;
+    }
+
+    const fetchData = async () => {
+      await fetchNFTs();
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [selectedCollection, page]);
+  
+  const handlePageChange = (change) => {
+    setPage((prevPage) => prevPage + change);
   };
 
   return (
@@ -78,18 +62,33 @@ const DAOWallet = () => {
     (
       <Container className="flex-grow-1 my-5">
         <Row>
+          <Col md={12}>  
+            <Dropdown className="mt-3">
+              <Dropdown.Toggle id="collection-dropdown">
+                {selectedCollection.name}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {collections.map((collection) => (
+                  <Dropdown.Item key={collection.id} onClick={() => {setSelectedCollection(collection); setPage(1);} }>
+                    {collection.name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row>
+        <Row className="mt-3">
           <Col md={12}>
             <Row>
-              {nfts.map((nft) => (
+              {viewData.nfts.map((nft) => (
                 <Col md={4} key={nft.tokenIndex}>
                   <Card className="mb-4">
-                    
-                  <CustomSVG
-                      canisterId={nft.canisterId}
-                      tokenId={nft.tokenId}
-                      className="custom-svg"
-                      style={{ width: "100%" }}
-                    />
+                  <img
+                    src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${nft.tokenId}`}
+                    alt="NFT"
+                    className="custom-svg"
+                    style={{ width: "100%" }}
+                  />
                   <Card.Body>
                     <Card.Title>NFT #{nft.tokenIndex + 1}</Card.Title>
                   </Card.Body>
@@ -97,6 +96,19 @@ const DAOWallet = () => {
                 </Col>
               ))}
             </Row>
+            <div className="d-flex justify-content-center mt-3 mb-3">
+                <ButtonGroup>
+                  <Button onClick={() => handlePageChange(-1)} disabled={page === 1}>
+                    Prior
+                  </Button>
+                  <div className="d-flex align-items-center mr-3 ml-3">
+                    <p className="mb-0">Page {page}/{Math.ceil(Number(viewData.totalEntries) / count)}</p>
+                  </div>
+                  <Button onClick={() => handlePageChange(1)} disabled={(page) * count >= Number(viewData.totalEntries)}>
+                    Next
+                  </Button>
+                </ButtonGroup>
+              </div>
           </Col>
         </Row>
       </Container>
@@ -105,12 +117,3 @@ const DAOWallet = () => {
 };
 
 export default DAOWallet;
-
-/*
-<Card.Img variant="top" src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&?tokenid=${nft.tokenId}`} />
-                
-
-                <p className='mt-4 mb-4'>Filter by collection.</p>
-                <p className='mt-4 mb-4'>Filter by for sale or not.</p>
-
-                */

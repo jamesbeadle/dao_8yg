@@ -13,7 +13,6 @@ const MyNavbar = () => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    console.log(isAdmin)
     if (!isAuthenticated) {
       navigate("/");
     }

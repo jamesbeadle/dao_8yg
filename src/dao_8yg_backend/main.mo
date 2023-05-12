@@ -21,8 +21,19 @@ actor {
   private stable var stable_collections: [T.Collection] = [];
   private stable var stable_nextCollectionId : Nat16 = 0;
   
-  public func getNFTWallet() : async [T.NFT] {
+  public shared ({caller}) func getNFTWallet() : async [T.NFT] {
+    assert not Principal.isAnonymous(caller);
     return await nftWalletInstance.getWalletNFTs(CANISTER_IDS);
+  };
+
+  public shared ({caller}) func getCollectionNFTs(collectionId: Nat16, page: Int, pageSize: Int) : async T.DAOWalletDTO {
+    assert not Principal.isAnonymous(caller);
+
+    let collection = await getCollection(collectionId);
+    switch(collection){
+      case (null) {return {nfts = []; totalEntries = 0 }};
+      case (?c) { return await nftWalletInstance.getCollectionNFTs(c.canisterId, page, pageSize); }
+    };
   };
 
   public func getCycles() : async Nat {
@@ -78,6 +89,7 @@ actor {
 
 
   system func preupgrade() {
+    stable_nextCollectionId := nftWalletInstance.getNextCollectionId();
     stable_collections := nftWalletInstance.getCollections();
   };
 

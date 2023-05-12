@@ -6,7 +6,8 @@ const CustomSVG = ({ canisterId, tokenId, className, style }) => {
 
   useEffect(() => {
     const fetchSVG = async () => {
-      const response = await fetch(`https://${canisterId}.raw.ic0.app/?tokenid=${tokenId}`);
+      //const response = await fetch(`https://${canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${tokenId}`);
+      const response = await fetch(`https://${canisterId}.raw.ic0.app/tokenid=${tokenId}`);
       const svgText = await response.text();
       
       // Parse SVG content into a Document object
@@ -46,11 +47,6 @@ const CustomSVG = ({ canisterId, tokenId, className, style }) => {
         setSvgContent(svgDoc.documentElement.outerHTML);
  
        };
-
-       //svgElement.setAttribute("style", "width: 100%; height: 500px;");
-
-      // Set modified SVG content as state
-      //setSvgContent(svgDoc.documentElement.outerHTML);
       
     };
 

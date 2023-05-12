@@ -25,20 +25,20 @@ module Types {
         nfts: [NFT];
     };
 
-    type TokenIndex = Nat32;
-    type AccountIdentifier__1 = Text;
-
-    public type Record = {
-        _0 : TokenIndex;
-        _1 : AccountIdentifier__1;
-    };
-
     public type NFT = {
-        tokenIndex: TokenIndex;
-        accountIdentifier: AccountIdentifier__1;
+        tokenIndex: Nat32;
+        accountIdentifier: Text;
         canisterId: Text;
         tokenId: Text;
     };
+
+    public type DAOWalletDTO = {
+        nfts: [NFT];
+        totalEntries: Nat64;
+    }; 
+
+
+
 
     public type ProposalState = {
         #Open;
