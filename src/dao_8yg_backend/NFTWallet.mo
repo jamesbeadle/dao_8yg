@@ -21,6 +21,11 @@ module {
     
     private var collections = List.nil<T.Collection>();
     private var nextCollectionId : Nat16 = 1;
+    
+    public func setData(stable_collections: [T.Collection], stable_collectionId : Nat16){
+        collections := List.fromArray(stable_collections);
+        nextCollectionId := stable_collectionId;
+    };
 
     public func getCollections() : [T.Collection] {
         return List.toArray(List.map<T.Collection, T.Collection>(collections, func (collection: T.Collection): T.Collection {

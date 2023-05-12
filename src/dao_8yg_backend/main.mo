@@ -17,6 +17,9 @@ actor {
   ];
 
   let nftWalletInstance = NFTWallet.NFTWallet();
+
+  private stable var stable_collections: [T.Collection] = [];
+  private stable var stable_nextCollectionId : Nat16 = 0;
   
   public func getNFTWallet() : async [T.NFT] {
     return await nftWalletInstance.getWalletNFTs(CANISTER_IDS);
@@ -73,5 +76,13 @@ actor {
     return nftWalletInstance.deleteCollection(id);
   };
 
+
+  system func preupgrade() {
+    stable_collections := nftWalletInstance.getCollections();
+  };
+
+  system func postupgrade() {
+    nftWalletInstance.setData(stable_collections, stable_nextCollectionId);
+  };
 
 };
