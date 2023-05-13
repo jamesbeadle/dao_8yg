@@ -15,15 +15,25 @@ const CheckNFTModal = ({ show, onHide }) => {
   useEffect(() => {
     const fetchData = async () => {
       await checkValidNFT();
-      setCheckingValidNFT(false);
     };
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      await checkValidNFT();
+    };
+    fetchData();
+  }, [isAuthenticated]);
 
   const checkValidNFT = async () => {
+    if(!isAuthenticated){
+      return;
+    }
     Actor.agentOf(backend).replaceIdentity(identity);
     const valid = await backend.hasValidNFT();
     setHasValidNFT(valid);
+    setCheckingValidNFT(false);
     if(valid){
       navigate("/DAOWallet");
     }
@@ -36,10 +46,10 @@ const CheckNFTModal = ({ show, onHide }) => {
         <Modal.Title>Checking for 8YG NFT</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        
         {!isAuthenticated &&
-          <Button onClick={() => { login(); }} className="btn btn-sm mb-4">Sign In To Access</Button>
+          <p className='mb-4'>Please sign in to access the DAO wallet.</p>
         }
+       
 
         {isAuthenticated && checkingValidNFT && 
           <div className="d-flex flex-column align-items-center justify-content-center mt-3">
@@ -60,6 +70,9 @@ const CheckNFTModal = ({ show, onHide }) => {
       
       </Modal.Body>
       <Modal.Footer>
+        {!isAuthenticated &&
+          <Button onClick={() => { login(); }} className="btn btn-sm mb-4">Sign In To Access</Button>
+        }
       </Modal.Footer>
     </Modal>
   );

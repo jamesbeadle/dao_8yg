@@ -57,7 +57,7 @@ const DAOWallet = () => {
     isLoading ? (
       <div className="customOverlay d-flex flex-column align-items-center justify-content-center">
       <Spinner animation="border" />
-      <p className='text-center mt-1'>Loading</p>
+      <p className='text-center mt-1'>Loading DAO Wallet</p>
     </div>) : 
     (
       <Container className="flex-grow-1 my-5">

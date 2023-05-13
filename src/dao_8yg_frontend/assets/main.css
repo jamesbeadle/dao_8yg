@@ -75,3 +75,8 @@ body {
 .custom-dropdown .dropdown-menu {
   position: absolute !important;
 }
+
+.modal-content{
+  background: linear-gradient(to bottom, #000000, #150333);
+  color:white !important;
+}
