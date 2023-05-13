@@ -12,12 +12,19 @@ import Blob "mo:base/Blob";
 import Int "mo:base/Int";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
+import SHA224 "./SHA224";
+import Text "mo:base/Text";
+import CRC32 "./CRC32";
 
 module {
     
+  public type Subaccount = Blob;
+  public type AccountIdentifier = Blob;
+
   public class NFTWallet(){
     
     private let daoWallet: Text = "0fa2901a7d5b36b1412ae14fc8c71ae424a7977930f59d230a0eb494f5e1b3c6";
+    let hexChars = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
 
     
     private var collections = List.nil<T.Collection>();
@@ -145,9 +152,6 @@ module {
       return dto;
     };
 
-
-    
-
     public func getWalletNFTs(canisterIds: [Text]) : async [T.NFT] {
 
       var combinedNFTs: [T.NFT] = [];
@@ -218,6 +222,46 @@ module {
       return Principal.toText(Principal.fromBlob(Blob.fromArray(Buffer.toArray(buffer))));
     };
 
+
+    
+    public func getAccountId(principal: Principal) : Text {
+      
+      let accountIdentifierBlob = accountIdentifier(principal, Blob.fromArrayMut(Array.init(32, 0 : Nat8)));
+      return blobToHexString(accountIdentifierBlob);
+    };
+
+    func blobToHexString(blob: Blob) : Text {
+      return Text.join("", Iter.map<Nat8, Text>(Iter.fromArray(Blob.toArray(blob)), func (x: Nat8) : Text {
+        let a = Nat8.toNat(x / 16);
+        let b = Nat8.toNat(x % 16);
+        hexChars[a] # hexChars[b]
+      }));
+    };
+    
+    
+    func accountIdentifier(principal: Principal, subaccount: Subaccount) : AccountIdentifier {
+      let hash = SHA224.Digest();
+      hash.write([0x0A]);
+      hash.write(Blob.toArray(Text.encodeUtf8("account-id")));
+      hash.write(Blob.toArray(Principal.toBlob(principal)));
+      hash.write(Blob.toArray(subaccount));
+      let hashSum = hash.sum();
+      let crc32Bytes = beBytes(CRC32.ofArray(hashSum));
+
+      let buffer = Buffer.fromArray<Nat8>(crc32Bytes);
+      for (x in hashSum.vals()) {
+        buffer.add(x);
+      };
+      
+      Blob.fromArray(Buffer.toArray(buffer));
+    };
+
+    func beBytes(n: Nat32) : [Nat8] {
+      func byte(n: Nat32) : Nat8 {
+        Nat8.fromNat(Nat32.toNat(n & 0xff))
+      };
+      [byte(n >> 24), byte(n >> 16), byte(n >> 8), byte(n)]
+    };
 
 
   };

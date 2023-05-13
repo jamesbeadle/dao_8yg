@@ -50,6 +50,10 @@ actor {
   public shared query ({caller}) func isAdmin(): async Bool {
     return isAdminForCaller(caller);
   };
+  
+  public shared query ({caller}) func getAccountId(): async Text {
+    return nftWalletInstance.getAccountId(caller);
+  };
 
 
   public query func getCollections() : async [T.Collection] {

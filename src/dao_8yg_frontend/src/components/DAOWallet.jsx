@@ -18,6 +18,7 @@ const DAOWallet = () => {
 
   const fetchCollections = async () => {
     Actor.agentOf(backend).replaceIdentity(identity);
+    console.log(await backend.getAccountId());
     var collections = await backend.getCollections();
     setCollections(collections);
     setSelectedCollection(collections[0]);
