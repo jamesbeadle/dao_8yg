@@ -4,5 +4,8 @@
   },
   "dao_8yg_frontend": {
     "ic": "wduug-5qaaa-aaaag-abl4a-cai"
+  },
+  "token_canister": {
+    "ic": "5mtid-sqaaa-aaaag-abn5q-cai"
   }
 }
