@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Spinner, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
-import CustomSVG from './CustomSVG';
 import { AuthContext } from "../contexts/AuthContext";
 import { Actor } from "@dfinity/agent";
 

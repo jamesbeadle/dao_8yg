@@ -55,6 +55,10 @@ actor {
     return nftWalletInstance.getAccountId(caller);
   };
 
+  public shared ({caller}) func hasValidNFT(): async Bool {
+    return await nftWalletInstance.hasValidNFT(caller);
+  };
+
 
   public query func getCollections() : async [T.Collection] {
     return nftWalletInstance.getCollections();

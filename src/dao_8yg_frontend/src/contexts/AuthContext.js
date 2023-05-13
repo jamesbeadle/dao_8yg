@@ -19,8 +19,10 @@ export const AuthProvider = ({ children }) => {
         //ID is a already connected wallet!
         setIsAuthenticated(true);
         Actor.agentOf(dao_8yg_backend_actor).replaceIdentity(identity);
+        
         const userIsAdmin = await dao_8yg_backend_actor.isAdmin();
         setIsAdmin(userIsAdmin);
+
       } else {
         //No existing connection, lets make one!
         setIsAuthenticated(false);
@@ -48,7 +50,6 @@ export const AuthProvider = ({ children }) => {
       Actor.agentOf(dao_8yg_backend_actor).replaceIdentity(identity);
       const userIsAdmin = await dao_8yg_backend_actor.isAdmin();
       setIsAdmin(userIsAdmin);
-      
     });
   };
 

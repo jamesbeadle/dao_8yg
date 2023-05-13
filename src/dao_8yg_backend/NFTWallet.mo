@@ -23,6 +23,7 @@ module {
 
   public class NFTWallet(){
     
+    private let daoNFTCanisterId = "tskpj-aiaaa-aaaag-qaxsq-cai";
     private let daoWallet: Text = "0fa2901a7d5b36b1412ae14fc8c71ae424a7977930f59d230a0eb494f5e1b3c6";
     let hexChars = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
 
@@ -222,6 +223,22 @@ module {
       return Principal.toText(Principal.fromBlob(Blob.fromArray(Buffer.toArray(buffer))));
     };
 
+    public func hasValidNFT(principal: Principal) : async Bool {
+      let principalAccountId = getAccountId(principal);
+      let nft_canister = actor (daoNFTCanisterId): actor { 
+        getRegistry: () -> async [(Nat32, Text)];
+      };
+
+      let registryRecords = await nft_canister.getRegistry();
+
+      let registry = Array.map<(Nat32, Text), T.NFT>(registryRecords, updateFn);
+
+      let filteredRegistry = Array.filter<T.NFT>(registry, func (nft: T.NFT) : Bool {
+          return nft.accountIdentifier == principalAccountId;
+      });
+      
+      return Array.size(filteredRegistry) > 0;
+    };
 
     
     public func getAccountId(principal: Principal) : Text {

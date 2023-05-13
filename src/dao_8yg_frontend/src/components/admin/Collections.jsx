@@ -89,7 +89,7 @@ const Collections = () => {
                     <h2>Approved Collections</h2>
                   </Card.Header>
                   <Card.Body>
-                  <Button className="mb-3 custom-button" onClick={() => setShowCreateModal(true)}>
+                  <Button className="mb-3" onClick={() => setShowCreateModal(true)}>
                       Add New Collection
                   </Button>
                   <div className="table-responsive">
