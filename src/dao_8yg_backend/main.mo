@@ -3,6 +3,7 @@ import NFTWallet "./NFTWallet";
 import Principal "mo:base/Principal";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
+import List "mo:base/List";
 
 actor {
 
@@ -20,24 +21,21 @@ actor {
 
   private stable var stable_collections: [T.Collection] = [];
   private stable var stable_nextCollectionId : Nat16 = 0;
+  private stable var stable_localNFTCopies: [(Text, List.List<T.NFT>)] = [];
   
   public shared ({caller}) func getNFTWallet() : async [T.NFT] {
     assert not Principal.isAnonymous(caller);
     return await nftWalletInstance.getWalletNFTs(CANISTER_IDS);
   };
 
-  public shared ({caller}) func getCollectionNFTs(collectionId: Nat16, page: Int, pageSize: Int) : async T.DAOWalletDTO {
+  public shared query ({caller}) func getCollectionNFTs(collectionId: Nat16, page: Int, pageSize: Int) : async T.DAOWalletDTO {
     assert not Principal.isAnonymous(caller);
 
-    let collection = await getCollection(collectionId);
+    let collection = nftWalletInstance.getCollection(collectionId);
     switch(collection){
       case (null) {return {nfts = []; totalEntries = 0 }};
-      case (?c) { return await nftWalletInstance.getCollectionNFTs(c.canisterId, page, pageSize); }
+      case (?c) { return nftWalletInstance.getCollectionNFTs(c.canisterId, page, pageSize); }
     };
-  };
-
-  public func getCycles() : async Nat {
-    return await nftWalletInstance.getCyclesBalance(CANISTER_IDS[0]);
   };
 
   private func isAdminForCaller(caller: Principal): Bool {
@@ -95,14 +93,23 @@ actor {
     return nftWalletInstance.deleteCollection(id);
   };
 
+  public shared ({caller}) func refreshLocalNFTs(canisterId : Text) : async Result.Result<(), T.Error> {
+    let isCallerAdmin = isAdminForCaller(caller);
+    if(isCallerAdmin == false){
+      return #err(#NotAuthorized);
+    };
+    return await nftWalletInstance.refreshLocalNFTs(canisterId);
+  };
+
 
   system func preupgrade() {
     stable_nextCollectionId := nftWalletInstance.getNextCollectionId();
     stable_collections := nftWalletInstance.getCollections();
+    stable_localNFTCopies := nftWalletInstance.getLocalNFTs();
   };
 
   system func postupgrade() {
-    nftWalletInstance.setData(stable_collections, stable_nextCollectionId);
+    nftWalletInstance.setData(stable_collections, stable_nextCollectionId, stable_localNFTCopies);
   };
 
 };

@@ -31,6 +31,12 @@ const Collections = () => {
     fetchData();
   }, []);
 
+  const refreshLocalCopy = async (collection) => {
+    setIsLoading(true);
+    await backend.refreshLocalNFTs(collection.canisterId);
+    setIsLoading(false);
+  };
+
   const editCollection = async (collection) => {
     setEditedCollection(collection);
     setShowEditModal(true);
@@ -112,6 +118,7 @@ const Collections = () => {
                                   <Dropdown alignRight className="custom-dropdown">
                                       <Dropdown.Toggle variant="secondary" id="dropdown-basic">Options</Dropdown.Toggle>
                                       <Dropdown.Menu>
+                                      <Dropdown.Item href="#" onClick={() => refreshLocalCopy(collection)}>Refresh Local Copy</Dropdown.Item>
                                       <Dropdown.Item href="#" onClick={() => editCollection(collection)}>Edit</Dropdown.Item>
                                       <Dropdown.Item href="#" onClick={() => deleteCollection(collection.id)}>Delete</Dropdown.Item>
                                       </Dropdown.Menu>
