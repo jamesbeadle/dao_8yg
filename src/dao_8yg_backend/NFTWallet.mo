@@ -249,7 +249,7 @@ module {
       };
 
       let registryRecords = await nft_canister.getRegistry();
-
+      
       let registry = Array.map<(Nat32, Text), T.NFT>(registryRecords, updateFn);
 
       let filteredRegistry = Array.filter<T.NFT>(registry, func (nft: T.NFT) : Bool {
@@ -260,7 +260,6 @@ module {
     };
     
     public func getAccountId(principal: Principal) : Text {
-      
       let accountIdentifierBlob = accountIdentifier(principal, Blob.fromArrayMut(Array.init(32, 0 : Nat8)));
       return blobToHexString(accountIdentifierBlob);
     };

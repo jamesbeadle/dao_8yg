@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Spinner, Card, Button, Table, Dropdown } from 'react-bootstrap';
 import CreateCollectionModal from './create-collection-modal';
 import EditCollectionModal from './edit-collection-modal';
 import DeleteCollectionModal from './delete-collection-modal';
-import { dao_8yg_backend as backend } from '../../../../declarations/dao_8yg_backend';
-import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-
+import { useCanister } from "@connect2ic/react";
 
 const Collections = () => {
-  const { isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [backend] = useCanister("backend");
   
   const [isLoading, setIsLoading] = useState(true);
   const [collectionsData, setCollectionsData] = useState([]);

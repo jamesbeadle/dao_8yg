@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import WalletImage from '../../assets/dao_wallet.jpg';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import LogoImage from '../../assets/logo.png';
 
-import { AuthContext } from "../contexts/AuthContext";
-
 const Profile = () => {
+
   
   const [isLoading, setIsLoading] = useState(true);
-  const { identity } = useContext(AuthContext);
   
   useEffect(() => {
     const fetchData = async () => {

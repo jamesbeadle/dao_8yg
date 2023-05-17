@@ -1,17 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { dao_8yg_backend as backend } from '../../../../declarations/dao_8yg_backend';
-import { Actor } from "@dfinity/agent";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useCanister } from "@connect2ic/react";
 
 const DeleteCollectionModal = ({ show, onHide, setIsLoading, collectionToDelete }) => {
-
-  const { identity } = useContext(AuthContext);
+  
+  const [backend] = useCanister("backend");
   
   const handleSubmit = async () => {
     setIsLoading(true);
 
-    Actor.agentOf(backend).replaceIdentity(identity);
     await backend.deleteCollection(collectionToDelete);
 
     onHide();

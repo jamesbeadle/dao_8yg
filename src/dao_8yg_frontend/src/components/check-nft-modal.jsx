@@ -1,36 +1,38 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Modal, Button, Spinner } from 'react-bootstrap';
-import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
-import { Actor } from "@dfinity/agent";
-import { AuthContext } from "../contexts/AuthContext";
+import React, { useState, useEffect } from 'react';
+import { Modal, Spinner } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
+import { ConnectButton, useConnect } from "@connect2ic/react";
+import { useCanister } from "@connect2ic/react";
+
 
 const CheckNFTModal = ({ show, onHide }) => {
+  
+  const [backend] = useCanister("backend");
+  const { isConnected } = useConnect();
 
   const [checkingValidNFT, setCheckingValidNFT] = useState(true);
   const [hasValidNFT, setHasValidNFT] = useState(false);
-  const { isAuthenticated, login, identity } = useContext(AuthContext);
   const navigate = useNavigate();
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       await checkValidNFT();
     };
     fetchData();
-  }, []);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      await checkValidNFT();
-    };
-    fetchData();
-  }, [isAuthenticated]);
+  }, [isConnected, backend]);
 
   const checkValidNFT = async () => {
-    if(!isAuthenticated){
+    if(!isConnected || !backend){
       return;
     }
-    Actor.agentOf(backend).replaceIdentity(identity);
+
+    let symbolKey = Symbol.for('ic-agent-metadata');
+    let keysCount = Object.keys(await backend[symbolKey].config.agent._identity).length > 0;
+    
+    if(keysCount == 0){
+      return;
+    }
+
     const valid = await backend.hasValidNFT();
     setHasValidNFT(valid);
     setCheckingValidNFT(false);
@@ -46,12 +48,12 @@ const CheckNFTModal = ({ show, onHide }) => {
         <Modal.Title>Checking for 8YG NFT</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {!isAuthenticated &&
+        {!isConnected &&
           <p className='mb-4'>Please sign in to access the DAO wallet.</p>
         }
        
 
-        {isAuthenticated && checkingValidNFT && 
+        {isConnected && checkingValidNFT && 
           <div className="d-flex flex-column align-items-center justify-content-center mt-3">
             <Spinner animation="border" />
             <p className='text-center mt-1'><small>Checking for 8YG NFT</small></p>
@@ -59,7 +61,7 @@ const CheckNFTModal = ({ show, onHide }) => {
         }
         
 
-        {isAuthenticated && !checkingValidNFT && !hasValidNFT &&
+        {isConnected && !checkingValidNFT && !hasValidNFT &&
           <p className='mb-4'>You need an 8YG NFT to view the DAO wallet. You can purchase one <a href="https://toniq.io/marketplace/8-years-gang" target='_blank'>here</a> to get started.
           <br /><br />
           <a href="https://toniq.io/marketplace/8-years-gang" target='_blank'>https://toniq.io/marketplace/8-years-gang</a>
@@ -70,8 +72,14 @@ const CheckNFTModal = ({ show, onHide }) => {
       
       </Modal.Body>
       <Modal.Footer>
-        {!isAuthenticated &&
-          <Button onClick={() => { login(); }} className="btn btn-sm mb-4">Sign In To Access</Button>
+        {!isConnected &&
+        <ConnectButton onClick={async (event) => {
+          event.preventDefault();
+          onHide();
+          // Some delay may be needed to let the onHide action to finish
+          await new Promise(resolve => setTimeout(resolve, 500));
+          event.target.click();
+        }} />
         }
       </Modal.Footer>
     </Modal>

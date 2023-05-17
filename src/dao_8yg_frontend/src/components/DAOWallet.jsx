@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Spinner, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
-import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
-import { AuthContext } from "../contexts/AuthContext";
-import { Actor } from "@dfinity/agent";
-
+import { useCanister } from "@connect2ic/react";
 
 const DAOWallet = () => {
   
-  const { identity } = useContext(AuthContext);
+  const [backend] = useCanister("backend");
+
   const [isLoading, setIsLoading] = useState(true);
   const [collections, setCollections] = useState(null);
   const [viewData, setViewData] = useState(null);
@@ -16,7 +14,6 @@ const DAOWallet = () => {
   const count = 9;
 
   const fetchCollections = async () => {
-    Actor.agentOf(backend).replaceIdentity(identity);
     console.log(await backend.getAccountId());
     var collections = await backend.getCollections();
     setCollections(collections);
@@ -24,7 +21,6 @@ const DAOWallet = () => {
   };
 
   const fetchNFTs = async () => {
-    Actor.agentOf(backend).replaceIdentity(identity);
     var nftWallet = await backend.getCollectionNFTs(Number(selectedCollection.id), Number(page), Number(count));
     setViewData(nftWallet);
   };

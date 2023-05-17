@@ -1,20 +1,17 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { dao_8yg_backend as backend } from '../../../../declarations/dao_8yg_backend';
-import { Actor } from "@dfinity/agent";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useCanister } from "@connect2ic/react";
 
 const CreateCollectionModal = ({ show, onHide, setIsLoading }) => {
 
-  const { identity } = useContext(AuthContext);
   const [canisterId, setCanisterId] = useState('');
   const [collectionName, setCollectionName] = useState('');
-
+  const [backend] = useCanister("backend");
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     
-    Actor.agentOf(backend).replaceIdentity(identity);
     await backend.createCollection(collectionName, canisterId);
     
     onHide();

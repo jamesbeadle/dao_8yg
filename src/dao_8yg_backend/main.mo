@@ -4,6 +4,7 @@ import Principal "mo:base/Principal";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
 import List "mo:base/List";
+import Debug "mo:base/Debug";
 
 actor {
 
@@ -45,8 +46,9 @@ actor {
     };
   };
   
-  public shared query ({caller}) func isAdmin(): async Bool {
-    return isAdminForCaller(caller);
+  public shared query (msg) func isAdmin(): async Bool {
+    Debug.print(debug_show msg.caller);
+    return isAdminForCaller(msg.caller);
   };
   
   public shared query ({caller}) func getAccountId(): async Text {
