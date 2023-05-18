@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
-import AuctionImage from '../../assets/8YGAuction.jpg';
+import DAOImage from '../../assets/dao.png';
+import TableImage from '../../assets/table.png';
 import CheckNFTModal from './check-nft-modal';
 import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
 
@@ -8,8 +9,6 @@ const Home = () => {
   
   const [isLoading, setIsLoading] = useState(true);
   const [showCheckWalletModal, setShowCheckWalletModal] = useState(false);
-  const [profitICP, setProfitICP] = useState(0);
-  const [profitUSD, setProfitUSD] = useState(0);
   const [data, setData] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
   
@@ -17,7 +16,6 @@ const Home = () => {
     const fetchData = async () => {
       let homeDTO = await backend.getHomeDTO();
       setData(homeDTO);
-      console.log(homeDTO);
       setIsLoading(false);
       let supply = await backend.getTotalSupply();
       setTotalSupply(supply);
@@ -92,17 +90,33 @@ const Home = () => {
         </Row>
         <Row>
           <Col md={6}>
-            <img src={AuctionImage} alt="8yg" className='mt-2 mb-4' style={{ maxWidth: '100%', maxHeight: '100%', marginRight: '10px' }} />
+            <img src={DAOImage} alt="8yg" className='mt-2 mb-4' style={{ maxWidth: '100%', maxHeight: '100%', marginRight: '10px' }} />
+            <img src={TableImage} alt="8yg" className='mt-2 mb-4' style={{ maxWidth: '100%', maxHeight: '100%', marginRight: '10px' }} />
           </Col>
           <Col md={6}>
             <Row>
               <Col md={12}>
-                <h1>Welcome</h1>
-                <p className='mt-4 mb-4'>8 Years Gang NFT holders will be able to stake their NFTs within this DAO. Initially this will enable them to participate in governance of the 8YG wallet and receive rewards based on the DAO's profit.</p>
+                <h1>8 Years Gang DAO</h1>
                 
-                <Button className="btn btn-sm mt-3 mb-4" onClick={() => setShowCheckWalletModal(true)}>View 8YG Wallet</Button>
+                <p className='mt-4 mb-4'><b>1. Stake Your 8 Years Gang NFTs</b>
+                  <br /><br />
+                  By staking your 8 Years Gang NFTs here, you can participate in proposals or start a new one. There is no minimum duration, which means you can unstake or restake your NFTs at any
+                </p>
                 
-                <p className='mb-4'>We aim to introduce various mechanisms to maximise the rewards associated with the gang members you own, check back here in the future for further updates.</p>
+                <p className='mt-4 mb-4'><b>2. Participate in Proposals or Start a New Proposal</b>
+                  <br /><br />
+                  Your voting power is determined based on the number of 8 Years Gang NFTs you have staked. The higher your voting power, the greater the weight of your vote in each proposal.
+                </p>
+                
+                <p className='mt-4 mb-4'><b>3 & 4. Earn $8YG Tokens</b>
+                  <br /><br />
+                  Once the DAO successfully sells an NFT and generates revenue, the smart contract uses these earnings to purchase $8YG Tokens and distributes them to all participants who took part in the proposal. The distribution of tokens takes into account the voting power of each individual member who participated. The higher your voting power, the greater your earnings.
+                  <br /><br />
+                  Staking your NFTs allows you to actively participate in shaping the direction of the DAO and be rewarded with $8YG Tokens based on your contribution. It's an opportunity to engage in decision-making and benefit from the success of the DAO's activities.
+
+                </p>
+                
+                <Button className="btn btn-sm mt-3 mb-4" onClick={() => setShowCheckWalletModal(true)}>View DAO NFT Wallet</Button>
               </Col>
             </Row>
           </Col>
