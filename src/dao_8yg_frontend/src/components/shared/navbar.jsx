@@ -10,7 +10,7 @@ const MyNavbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const { isConnected } = useConnect()
+  const { isConnected } = useConnect();
   const [backend] = useCanister("backend");
 
   useEffect(() => {

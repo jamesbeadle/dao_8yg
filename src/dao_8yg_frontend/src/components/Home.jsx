@@ -4,6 +4,7 @@ import DAOImage from '../../assets/dao.png';
 import TableImage from '../../assets/table.png';
 import CheckNFTModal from './check-nft-modal';
 import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
+import { ConnectButton, useConnect } from "@connect2ic/react";
 
 const Home = () => {
   
@@ -11,7 +12,8 @@ const Home = () => {
   const [showCheckWalletModal, setShowCheckWalletModal] = useState(false);
   const [data, setData] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
-  
+  const { isConnected } = useConnect();
+
   useEffect(() => {
     const fetchData = async () => {
       let homeDTO = await backend.getHomeDTO();
@@ -100,7 +102,7 @@ const Home = () => {
                 
                 <p className='mt-4 mb-4'><b>1. Stake Your 8 Years Gang NFTs</b>
                   <br /><br />
-                  By staking your 8 Years Gang NFTs here, you can participate in proposals or start a new one. There is no minimum duration, which means you can unstake or restake your NFTs at any
+                  By staking your 8 Years Gang NFTs here, you can participate in proposals or start a new one. There is no minimum duration, which means you can unstake or restake your NFTs at any time.
                 </p>
                 
                 <p className='mt-4 mb-4'><b>2. Participate in Proposals or Start a New Proposal</b>
@@ -115,8 +117,15 @@ const Home = () => {
                   Staking your NFTs allows you to actively participate in shaping the direction of the DAO and be rewarded with $8YG Tokens based on your contribution. It's an opportunity to engage in decision-making and benefit from the success of the DAO's activities.
 
                 </p>
+                {isConnected && 
+                  <Button className="btn btn-sm mt-3 mb-4" onClick={() => setShowCheckWalletModal(true)}>View DAO NFT Wallet</Button>
+                }
+
                 
-                <Button className="btn btn-sm mt-3 mb-4" onClick={() => setShowCheckWalletModal(true)}>View DAO NFT Wallet</Button>
+                {!isConnected &&
+                  <ConnectButton />
+                }
+                
               </Col>
             </Row>
           </Col>
