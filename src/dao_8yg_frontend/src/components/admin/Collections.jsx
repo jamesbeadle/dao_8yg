@@ -23,7 +23,12 @@ const Collections = () => {
   useEffect(() => {
     const fetchData = async () => {
 
+      let isAdmin = await backend.isAdmin();
+      if(!isAdmin){
+        navigate('/');
+      }
 
+      await fetchCollections();
       setIsLoading(false);
     };
     fetchData();
@@ -70,13 +75,6 @@ const Collections = () => {
     setCollectionsData(colllections);
     setIsLoading(false);
   };
-
-  useEffect(() => {
-    if(!isAdmin){
-      navigate("/");
-    }
-    fetchCollections();
-  }, []);
 
   return (
     <Container>

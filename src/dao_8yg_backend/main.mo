@@ -1,5 +1,6 @@
 import T "./types";
 import NFTWallet "./NFTWallet";
+import Token "./Token";
 import Principal "mo:base/Principal";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
@@ -19,11 +20,35 @@ actor {
   ];
 
   let nftWalletInstance = NFTWallet.NFTWallet();
+  let tokenInstance = Token.Token();
 
   private stable var stable_collections: [T.Collection] = [];
   private stable var stable_nextCollectionId : Nat16 = 0;
   private stable var stable_localNFTCopies: [(Text, List.List<T.NFT>)] = [];
-  
+  private stable var stable_profit_icp : Nat64 = 0;
+  private stable var stable_profit_usd : Nat64 = 0;
+
+  public shared query func getHomeDTO() : async T.HomeDTO {
+    
+    let homeDTO: T.HomeDTO = {
+      profit_icp = nftWalletInstance.getProfitICP();
+      profit_usd = nftWalletInstance.getProfitUSD();
+      purchased_nfts = nftWalletInstance.getPurchasedNFTs();
+      sold_nfts = nftWalletInstance.getSoldNFTs();
+      owned_NFTs = nftWalletInstance.getOwnedNFTs();
+      floor_price = nftWalletInstance.getFloorPrice();
+      price_8yg = tokenInstance.getTokenPriceUSD();
+      market_cap = tokenInstance.getMarketCap();
+      volume = tokenInstance.getVolume();
+    };
+
+    return homeDTO;
+  };
+
+  public shared func getTotalSupply() : async Nat64 {
+    return await tokenInstance.getTotalSupply();
+  };
+
   public shared ({caller}) func getNFTWallet() : async [T.NFT] {
     assert not Principal.isAnonymous(caller);
     return await nftWalletInstance.getWalletNFTs(CANISTER_IDS);
@@ -108,10 +133,12 @@ actor {
     stable_nextCollectionId := nftWalletInstance.getNextCollectionId();
     stable_collections := nftWalletInstance.getCollections();
     stable_localNFTCopies := nftWalletInstance.getLocalNFTs();
+    stable_profit_icp := nftWalletInstance.getProfitICP();
+    stable_profit_usd := nftWalletInstance.getProfitUSD();
   };
 
   system func postupgrade() {
-    nftWalletInstance.setData(stable_collections, stable_nextCollectionId, stable_localNFTCopies);
+    nftWalletInstance.setData(stable_collections, stable_nextCollectionId, stable_localNFTCopies, stable_profit_icp, stable_profit_usd);
   };
 
 };

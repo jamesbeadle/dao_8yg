@@ -32,6 +32,18 @@ module Types {
         tokenId: Text;
     };
 
+    public type HomeDTO = {
+        profit_icp: Nat64;
+        profit_usd: Nat64;
+        purchased_nfts: Nat32;
+        sold_nfts: Nat32;
+        owned_NFTs: Nat32;
+        floor_price: Nat64;
+        price_8yg: Nat64;
+        market_cap: Nat64;
+        volume: Nat64;
+    }; 
+
     public type DAOWalletDTO = {
         nfts: [NFT];
         totalEntries: Nat64;

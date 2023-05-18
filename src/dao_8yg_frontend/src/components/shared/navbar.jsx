@@ -2,7 +2,7 @@ import React, { useState, useEffect  } from "react";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { Link, useNavigate } from "react-router-dom";
-import { ConnectButton, ConnectDialog, Connect2ICProvider, useConnect, useCanister } from "@connect2ic/react";
+import { ConnectButton, useConnect, useCanister } from "@connect2ic/react";
 
 const MyNavbar = () => {
 

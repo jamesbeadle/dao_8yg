@@ -33,16 +33,47 @@ module {
     private var collections = List.nil<T.Collection>();
     private var nextCollectionId : Nat16 = 1;
     private var localNFTCopies = HashMap.HashMap<Text, List.List<T.NFT>>(0, Text.equal, Text.hash);
-
+    private var profit_icp: Nat64 = 0;
+    private var profit_usd: Nat64 = 0;
+    private var purchased_nfts: Nat32 = 0;
+    private var sold_nfts: Nat32 = 0;
+    private var owned_nfts: Nat32 = 0;
+    
     public func getNextCollectionId() : Nat16 {
         return nextCollectionId;
     };
+
+    public func getProfitICP() : Nat64 {
+        return profit_icp;
+    };
+
+    public func getProfitUSD() : Nat64 {
+        return profit_usd;
+    };
+
+    public func getPurchasedNFTs() : Nat32 {
+        return purchased_nfts;
+    };
+
+    public func getSoldNFTs() : Nat32 {
+        return sold_nfts;
+    };
+
+    public func getOwnedNFTs() : Nat32 {
+        return owned_nfts;
+    };
+
+    public func getFloorPrice() : Nat64 {
+        return 0;
+    };
     
-    public func setData(stable_collections: [T.Collection], stable_collectionId : Nat16, stable_localNFTCopies: [(Text, List.List<T.NFT>)]){
+    public func setData(stable_collections: [T.Collection], stable_collectionId : Nat16, stable_localNFTCopies: [(Text, List.List<T.NFT>)], stable_profit_icp: Nat64, stable_profit_usd: Nat64){
         collections := List.fromArray(stable_collections);
         nextCollectionId := stable_collectionId;
         localNFTCopies := HashMap.fromIter<Text, List.List<T.NFT>>(
             stable_localNFTCopies.vals(), stable_localNFTCopies.size(), Text.equal, Text.hash);
+        profit_icp := stable_profit_icp;
+        profit_usd := stable_profit_usd;
     };
 
     //approved collection function

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import LogoImage from '../../assets/logo.png';
+import { useConnect } from "@connect2ic/react";
 
 const Profile = () => {
 
   
   const [isLoading, setIsLoading] = useState(true);
+  const [userPrincipal, setUserPrincipal] = useState('');
+  const { isConnected, principal } = useConnect()
   
   useEffect(() => {
     const fetchData = async () => {
@@ -13,6 +16,14 @@ const Profile = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if(!isConnected){
+      return;
+    }
+
+    setUserPrincipal(principal);
+  }, [isConnected]);
 
   return (
     isLoading ? (
@@ -30,7 +41,7 @@ const Profile = () => {
             <Row>
               <Col md={12}>
                 <h1>Profile Page</h1>
-                <p>User Principal: {identity.getPrincipal().toText()}</p>
+                <p>User Principal: {userPrincipal}</p>
                
               </Col>
             </Row>

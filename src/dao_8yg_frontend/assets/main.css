@@ -6,6 +6,14 @@
   font-style: normal;
 }
 
+
+@font-face {
+  font-family: 'Genos';
+  src: url('Genos.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   background: linear-gradient(to bottom, #000000, #150333);
   transition: background ease-in-out 300ms, color ease-in-out 150ms, padding ease-in-out 150ms;
@@ -79,4 +87,26 @@ body {
 .modal-content{
   background: linear-gradient(to bottom, #000000, #150333);
   color:white !important;
+}
+
+.gold-header{
+  color: #D79D39 !important;
+  font-weight: bold;
+}
+
+
+.numerical-text {
+  font-family: 'Genos', 'Play', sans-serif !important;
+}
+
+.purple-subheader{
+  color: #CA3461;
+}
+
+.blue-subheader{
+  color: #659DB4;
+}
+
+.detail-text{
+  font-size: 20pt;
 }
