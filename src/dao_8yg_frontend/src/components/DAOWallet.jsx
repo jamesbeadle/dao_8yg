@@ -35,8 +35,7 @@ const DAOWallet = () => {
       }
 
       let profile = await backend.getProfile();
-      setProfile(profile);
-
+      
       if(!profile.disclaimerAccepted){
         navigate('/Disclaimer');
         return;
