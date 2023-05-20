@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Spinner, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
-import { useCanister } from "@connect2ic/react";
+import { useConnect, useCanister } from "@connect2ic/react";
 
 const DAOWallet = () => {
   
+  const { isConnected } = useConnect();
   const [backend] = useCanister("backend");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +15,6 @@ const DAOWallet = () => {
   const count = 9;
 
   const fetchCollections = async () => {
-    console.log(await backend.getAccountId());
     var collections = await backend.getCollections();
     setCollections(collections);
     setSelectedCollection(collections[0]);
@@ -27,10 +27,25 @@ const DAOWallet = () => {
   
   useEffect(() => {
     const fetchData = async () => {
+      let symbolKey = Symbol.for('ic-agent-metadata');
+      let keysCount = Object.keys(await backend[symbolKey].config.agent._identity).length > 0;
+      
+      if(keysCount == 0){
+        return;
+      }
+
+      let profile = await backend.getProfile();
+      setProfile(profile);
+
+      if(!profile.disclaimerAccepted){
+        navigate('/Disclaimer');
+        return;
+      }
+
       await fetchCollections();
     };
     fetchData();
-  }, []);
+  }, [isConnected, backend]);
 
   useEffect(() => {
     setIsLoading(true);

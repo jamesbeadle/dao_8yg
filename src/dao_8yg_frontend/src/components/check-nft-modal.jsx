@@ -32,7 +32,7 @@ const CheckNFTModal = ({ show, onHide }) => {
     if(keysCount == 0){
       return;
     }
-
+    
     const valid = await backend.hasValidNFT();
     setHasValidNFT(valid);
     setCheckingValidNFT(false);

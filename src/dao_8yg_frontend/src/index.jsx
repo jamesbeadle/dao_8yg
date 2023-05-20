@@ -18,13 +18,13 @@ import { InfinityWallet } from "@connect2ic/core/providers/infinity-wallet";
 import { PlugWallet } from "@connect2ic/core/providers/plug-wallet";
 
 import { createClient } from "@connect2ic/core"
-import { defaultProviders } from "@connect2ic/core/providers"
 import { ConnectDialog, Connect2ICProvider } from "@connect2ic/react"
 
 import style from "@connect2ic/core/style.css"
 console.log(style)
 
 import * as backend from '../../declarations/dao_8yg_backend';
+import Disclaimer from "./components/Disclaimer";
 
 
 const PrivateWindowFallback = () => {
@@ -87,6 +87,7 @@ const App = () => {
             <Route path="/DAOWallet" element={<DAOWallet />} />
             <Route path="/Tokenomics" element={<Tokenomics />} />
             <Route path="/Profile" element={<Profile />} />
+            <Route path="/Disclaimer" element={<Disclaimer />} />
             </Routes>
           <MyFooter />
         </div>

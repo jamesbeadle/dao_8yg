@@ -3,18 +3,23 @@ import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
 import DAOImage from '../../assets/dao.png';
 import TableImage from '../../assets/table.png';
 import CheckNFTModal from './check-nft-modal';
-import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
+import { useCanister } from "@connect2ic/react";
 import { ConnectButton, useConnect } from "@connect2ic/react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   
+  const [backend] = useCanister("backend");
   const [isLoading, setIsLoading] = useState(true);
   const [showCheckWalletModal, setShowCheckWalletModal] = useState(false);
   const [data, setData] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
   const { isConnected } = useConnect();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     const fetchData = async () => {
       let homeDTO = await backend.getHomeDTO();
       setData(homeDTO);
@@ -28,6 +33,29 @@ const Home = () => {
   const hideCheckWalletModal = async () => {
     setShowCheckWalletModal(false); 
   };
+
+  useEffect(() => {
+    if (!isConnected || !backend) {
+      return;
+    }
+
+    const fetchData = async () => {
+      let symbolKey = Symbol.for('ic-agent-metadata');
+      let keysCount = Object.keys(await backend[symbolKey].config.agent._identity).length > 0;
+      
+      if(keysCount == 0){
+        return;
+      }
+
+      let profile = await backend.getProfile();
+      
+      if(!profile.disclaimerAccepted){
+        navigate('/Disclaimer');
+      }
+    };
+    fetchData();
+
+  }, [isConnected, backend])
 
   return (
     isLoading ? (

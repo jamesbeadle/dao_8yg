@@ -6,8 +6,11 @@ import Array "mo:base/Array";
 import Result "mo:base/Result";
 import List "mo:base/List";
 import Debug "mo:base/Debug";
+import Profiles "./Profiles";
+import Blob "mo:base/Blob";
+import Account "./Account";
 
-actor {
+actor Self {
 
   let admins : [Principal] = [
     Principal.fromText("xfi2l-oos4c-7irsb-4qiuu-jmbrg-7qfqj-z4qaf-budpw-rgghp-gihf2-vae"),
@@ -21,12 +24,14 @@ actor {
 
   let nftWalletInstance = NFTWallet.NFTWallet();
   let tokenInstance = Token.Token();
+  let profilesInstance = Profiles.Profiles();
 
   private stable var stable_collections: [T.Collection] = [];
   private stable var stable_nextCollectionId : Nat16 = 0;
   private stable var stable_localNFTCopies: [(Text, List.List<T.NFT>)] = [];
   private stable var stable_profit_icp : Nat64 = 0;
   private stable var stable_profit_usd : Nat64 = 0;
+  private stable var stable_profiles: [T.Profile] = [];
 
   public shared query func getHomeDTO() : async T.HomeDTO {
     
@@ -70,9 +75,12 @@ actor {
       case _ { true };
     };
   };
-  
+
+  public shared query ({caller}) func acceptedDisclaimer(): async Bool {
+    return profilesInstance.hasAcceptedDisclaimer(caller);
+  };
+
   public shared query (msg) func isAdmin(): async Bool {
-    Debug.print(debug_show msg.caller);
     return isAdminForCaller(msg.caller);
   };
   
@@ -128,6 +136,64 @@ actor {
     return await nftWalletInstance.refreshLocalNFTs(canisterId);
   };
 
+  public shared ({caller}) func getProfile() : async T.Profile {
+    assert not Principal.isAnonymous(caller);
+    let principalName = Principal.toText(caller);
+    var depositAddress = Blob.fromArray([]);
+    var withdrawalAddress = "";
+    var disclaimerAccepted = false;
+    var profile = profilesInstance.getProfile(Principal.toText(caller));
+    
+    if(profile == null){
+      Debug.print(debug_show "create profile");
+      profilesInstance.createProfile(Principal.toText(caller), "", getUserDepositAccount(caller), false);
+      Debug.print(debug_show "get profile");
+      profile := profilesInstance.getProfile(Principal.toText(caller));
+    };
+    
+    switch(profile){
+      case (null){};
+      case (?p){
+        depositAddress := p.depositAddress;
+        withdrawalAddress := p.withdrawalAddress;
+        disclaimerAccepted := p.disclaimerAccepted;
+      };
+    };
+
+    let profileDTO: T.Profile = {
+      principal = principalName;
+      depositAddress = depositAddress;
+      withdrawalAddress = withdrawalAddress;
+      disclaimerAccepted = disclaimerAccepted;
+    };
+
+  
+    Debug.print(debug_show "return profile");
+    Debug.print(debug_show profileDTO);
+
+    return profileDTO;
+    
+  };
+  
+  private func getUserDepositAccount(caller: Principal) : Account.AccountIdentifier {
+    Account.accountIdentifier(Principal.fromActor(Self), Account.principalToSubaccount(caller))
+  };
+
+  public shared ({caller}) func acceptDisclaimer() : async Result.Result<(), T.Error> {
+    assert not Principal.isAnonymous(caller);
+    return profilesInstance.acceptDisclaimer(Principal.toText(caller));
+  };
+
+  public shared ({caller}) func updateWithdrawalAddress(withdrawalAddress :Text) : async Result.Result<(), T.Error> {
+    assert not Principal.isAnonymous(caller);
+    return profilesInstance.updateWithdrawalAddress(Principal.toText(caller), withdrawalAddress);
+  };
+
+  public shared ({caller}) func getProfiles() : async [T.Profile] {
+    
+    return profilesInstance.getProfiles();
+  };
+
 
   system func preupgrade() {
     stable_nextCollectionId := nftWalletInstance.getNextCollectionId();
@@ -135,9 +201,11 @@ actor {
     stable_localNFTCopies := nftWalletInstance.getLocalNFTs();
     stable_profit_icp := nftWalletInstance.getProfitICP();
     stable_profit_usd := nftWalletInstance.getProfitUSD();
+    stable_profiles := profilesInstance.getProfiles();
   };
 
   system func postupgrade() {
+    profilesInstance.setData(stable_profiles);
     nftWalletInstance.setData(stable_collections, stable_nextCollectionId, stable_localNFTCopies, stable_profit_icp, stable_profit_usd);
   };
 

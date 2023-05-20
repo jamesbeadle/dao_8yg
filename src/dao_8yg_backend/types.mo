@@ -1,6 +1,8 @@
 
 module Types {
 
+    public type AccountIdentifier = Blob;
+
     
     public type Error = {
         #NotFound;
@@ -49,6 +51,12 @@ module Types {
         totalEntries: Nat64;
     }; 
 
+    public type Profile = {
+        principal: Text;
+        depositAddress: Blob;
+        withdrawalAddress: Text;
+        disclaimerAccepted: Bool;
+    };
 
 
 

@@ -7,6 +7,7 @@ import { ConnectButton, useConnect, useCanister } from "@connect2ic/react";
 const MyNavbar = () => {
 
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -26,12 +27,29 @@ const MyNavbar = () => {
         return;
       }
 
+      let profile = await backend.getProfile();
+      setProfile(profile);
+
+      if(!profile.disclaimerAccepted){
+        navigate('/Disclaimer');
+      }
+
       let admin = await backend.isAdmin();
       setIsAdmin(admin);
     };
     fetchData();
 
   }, [isConnected, backend]);
+
+  useEffect(() => {
+    if(profile == null){
+      return;
+    }
+    
+    if(!profile.disclaimerAccepted){
+      navigate('/disclaimer');
+    }
+  }, [profile])
 
   return (
     <Navbar expand="lg">
