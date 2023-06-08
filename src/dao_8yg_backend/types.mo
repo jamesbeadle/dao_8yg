@@ -58,7 +58,12 @@ module Types {
         disclaimerAccepted: Bool;
     };
 
-
+    public type VotingNFT = {
+        id: Nat32;
+        votingPower: Nat8;
+        canisterId: Text;
+        tokenId: Text;
+    };
 
     public type ProposalState = {
         #Open;

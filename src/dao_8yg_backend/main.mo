@@ -9,6 +9,7 @@ import Debug "mo:base/Debug";
 import Profiles "./Profiles";
 import Blob "mo:base/Blob";
 import Account "./Account";
+import DAONFTs "./DAONFTs";
 
 actor Self {
 
@@ -25,6 +26,7 @@ actor Self {
   let nftWalletInstance = NFTWallet.NFTWallet();
   let tokenInstance = Token.Token();
   let profilesInstance = Profiles.Profiles();
+  let daoNFTsInstance = DAONFTs.DAONFTs();
 
   private stable var stable_collections: [T.Collection] = [];
   private stable var stable_nextCollectionId : Nat16 = 0;
@@ -134,6 +136,12 @@ actor Self {
       return #err(#NotAuthorized);
     };
     return await nftWalletInstance.refreshLocalNFTs(canisterId);
+  };
+
+  public shared ({caller}) func getVotingNFTs() : async [T.VotingNFT] {
+    assert not Principal.isAnonymous(caller);
+    let votingNFTs: List.List<T.VotingNFT> = List.nil<T.VotingNFT>();
+    return await nftWalletInstance.getVotingNFTs(caller, List.fromArray(daoNFTsInstance.nfts));
   };
 
   public shared ({caller}) func getProfile() : async T.Profile {

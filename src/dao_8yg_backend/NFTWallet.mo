@@ -289,6 +289,55 @@ module {
       
       return Array.size(filteredRegistry) > 0;
     };
+
+    public func getVotingNFTs(principal: Principal, allVotingNFTs: List.List<T.VotingNFT>) : async [T.VotingNFT] {
+      let principalAccountId = getAccountId(principal);
+      let nft_canister = actor (daoNFTCanisterId): actor { 
+        getRegistry: () -> async [(Nat32, Text)];
+      };
+
+      let registryRecords = await nft_canister.getRegistry();
+      
+      let registry = Array.map<(Nat32, Text), T.NFT>(registryRecords, updateFn);
+
+      let filteredRegistry = Array.filter<T.NFT>(registry, func (nft: T.NFT) : Bool {
+          return nft.accountIdentifier == principalAccountId;
+      });
+
+      let votingNFTs = Array.map<T.NFT, T.VotingNFT>(filteredRegistry, func (nft: T.NFT) : T.VotingNFT {
+
+        let votingNFT = List.find<T.VotingNFT>(allVotingNFTs, func(vp_nft: T.VotingNFT): Bool {
+          return vp_nft.id == nft.tokenIndex + 1;
+        });
+
+        switch(votingNFT){
+          case (null) { return { id = 0; votingPower = 0; canisterId = ""; tokenId = ""; } };
+          case (?vnft){
+            return {
+              id = nft.tokenIndex + 1; 
+              votingPower = vnft.votingPower; 
+              canisterId = vnft.canisterId; 
+              tokenId = "";  
+            };
+          };
+        };
+      });
+      
+      let returnNFTs: [T.VotingNFT] = [];
+      let buffer = Buffer.fromArray<T.VotingNFT>(returnNFTs);
+
+      for (i in Iter.range(0, votingNFTs.size() - 1)) {
+        let nftWithToken = {
+          id = votingNFTs[i].id;
+          votingPower = votingNFTs[i].votingPower;
+          canisterId =  votingNFTs[i].canisterId;
+          tokenId = await computeExtTokenIdentifier(Principal.fromText(votingNFTs[i].canisterId), votingNFTs[i].id - 1);
+        };
+        buffer.add(nftWithToken);
+      };
+      
+      return Buffer.toArray(buffer);
+    };
     
     public func getAccountId(principal: Principal) : Text {
       let accountIdentifierBlob = accountIdentifier(principal, Blob.fromArrayMut(Array.init(32, 0 : Nat8)));
