@@ -194,7 +194,6 @@ actor Self {
     return profilesInstance.getProfiles();
   };
 
-
   system func preupgrade() {
     stable_nextCollectionId := nftWalletInstance.getNextCollectionId();
     stable_collections := nftWalletInstance.getCollections();
