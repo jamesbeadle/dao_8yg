@@ -24,7 +24,6 @@ const Profile = () => {
       if(keysCount == 0){
         return;
       }
-      
       const fetchedNfts = await backend.getVotingNFTs();
       setNfts(fetchedNfts);
       const totalPower = fetchedNfts.reduce((acc, nft) => acc + nft.votingPower, 0);
@@ -44,33 +43,44 @@ const Profile = () => {
           </div>
       ) :
       (
-          <Container className="flex-grow-1 my-5">
-              <Row>
-                  <Col md={12}>
-                      <h1>Your Profile</h1>
-                      <p>User Principal: {userPrincipal}</p>
-                      <br />
-                      <h4>Voting Power</h4>
-                      <p>Total: {totalVotingPower}</p>
-                      <br />
-                      <h6>NFTs:</h6>
-                  </Col>
-              </Row>
-              <Row>
-                  <CardDeck>
-                      {nfts.map((nft) => (
-                          <Card key={nft.id} style={{maxWidth: '18rem'}} className="mb-4">
-                              <Card.Header>NFT ID: {nft.id}</Card.Header>
-                              <Card.Img variant="top" src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${nft.tokenId}`} />
-                              <Card.Body>
+        <Container className="flex-grow-1 my-5">
+            <Row>
+                <Col md={12}>
+                    <h1>Your Profile</h1>
+                    <p className='mt-2'>{userPrincipal}</p>
+                    <br />
+                    <h4>Total Voting Power</h4>
+                    <h1 className='numerical-text'>{totalVotingPower}</h1>
+                    <br />
+                    <h6>NFTs:</h6>
+                </Col>
+            </Row>
+            <Row className="mt-3">
+            <Col md={12}>
+                <Row>
+                    {nfts.map((nft) => (
+                         <Col md={4} key={nft.id}>
+                            <Card className="mb-4">
+                                <img
+                                    src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${nft.tokenId}`}
+                                    alt="NFT"
+                                    className="custom-svg"
+                                    style={{ width: "100%" }}
+                                />
+                                <Card.Body>
+                                    <Card.Title>NFT #{nft.id}</Card.Title>
+                                </Card.Body>
+                                <Card.Footer>
                                   <Card.Text>Voting Power: {nft.votingPower}</Card.Text>
-                              </Card.Body>
-                          </Card>
+                                </Card.Footer>
+                            </Card>
+                        </Col>
                       ))}
-                  </CardDeck>
-              </Row>
-          </Container>
-      )
+                </Row>
+            </Col>
+        </Row>
+    </Container>
+    )
   );
 
 };
