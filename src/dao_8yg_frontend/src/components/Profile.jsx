@@ -37,41 +37,42 @@ const Profile = () => {
   }, [isConnected, backend]);
 
   return (
-    isLoading ? (
-      <div className="customOverlay d-flex flex-column align-items-center justify-content-center">
-        <Spinner animation="border" />
-        <p className='text-center mt-1'>Loading</p>
-      </div>
-    ) :
-    (
-      <Container className="flex-grow-1 my-5">
-        <Row>
-          <Col md={12}>
-            <h1>Your Profile</h1>
-            <p>User Principal: {userPrincipal}</p>
-            <br />
-            <h4>Voting Power</h4>
-            <p>Total: {totalVotingPower}</p>
-            <br />
-            <h6>NFTs:</h6>
-          </Col>
-          <CardDeck>
-            {nfts.map((nft) => (
-              <Col key={nft.id} xs={12} md={3} className="mb-4">
-                <Card style={{maxWidth: '18rem'}}>
-                  <Card.Header>NFT ID: {nft.id}</Card.Header>
-                  <Card.Img variant="top" src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${nft.tokenId}`} />
-                  <Card.Body>
-                    <Card.Text>Voting Power: {nft.votingPower}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </CardDeck>
-        </Row>
-      </Container>
-    )
+      isLoading ? (
+          <div className="customOverlay d-flex flex-column align-items-center justify-content-center">
+              <Spinner animation="border" />
+              <p className='text-center mt-1'>Loading</p>
+          </div>
+      ) :
+      (
+          <Container className="flex-grow-1 my-5">
+              <Row>
+                  <Col md={12}>
+                      <h1>Your Profile</h1>
+                      <p>User Principal: {userPrincipal}</p>
+                      <br />
+                      <h4>Voting Power</h4>
+                      <p>Total: {totalVotingPower}</p>
+                      <br />
+                      <h6>NFTs:</h6>
+                  </Col>
+              </Row>
+              <Row>
+                  <CardDeck>
+                      {nfts.map((nft) => (
+                          <Card key={nft.id} style={{maxWidth: '18rem'}} className="mb-4">
+                              <Card.Header>NFT ID: {nft.id}</Card.Header>
+                              <Card.Img variant="top" src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${nft.tokenId}`} />
+                              <Card.Body>
+                                  <Card.Text>Voting Power: {nft.votingPower}</Card.Text>
+                              </Card.Body>
+                          </Card>
+                      ))}
+                  </CardDeck>
+              </Row>
+          </Container>
+      )
   );
+
 };
 
 export default Profile;

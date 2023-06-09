@@ -292,9 +292,13 @@ module {
 
     public func getVotingNFTs(principal: Principal, allVotingNFTs: List.List<T.VotingNFT>) : async [T.VotingNFT] {
       let principalAccountId = getAccountId(principal);
+      
+
       let nft_canister = actor (daoNFTCanisterId): actor { 
         getRegistry: () -> async [(Nat32, Text)];
+        listings: () -> async [T.Listing];
       };
+
 
       let registryRecords = await nft_canister.getRegistry();
       
@@ -326,14 +330,23 @@ module {
       let returnNFTs: [T.VotingNFT] = [];
       let buffer = Buffer.fromArray<T.VotingNFT>(returnNFTs);
 
+      let listings = await nft_canister.listings();
+      
       for (i in Iter.range(0, votingNFTs.size() - 1)) {
-        let nftWithToken = {
-          id = votingNFTs[i].id;
-          votingPower = votingNFTs[i].votingPower;
-          canisterId =  votingNFTs[i].canisterId;
-          tokenId = await computeExtTokenIdentifier(Principal.fromText(votingNFTs[i].canisterId), votingNFTs[i].id - 1);
+
+      switch (Array.find<T.Listing>(listings, func (listing) { listing.0 == votingNFTs[i].id - 1; })) {
+        case null {  
+          let nftWithToken = {
+            id = votingNFTs[i].id;
+            votingPower = votingNFTs[i].votingPower;
+            canisterId =  votingNFTs[i].canisterId;
+            tokenId = await computeExtTokenIdentifier(Principal.fromText(votingNFTs[i].canisterId), votingNFTs[i].id - 1);
+          };
+          buffer.add(nftWithToken);
         };
-        buffer.add(nftWithToken);
+        case _ {  };
+      };
+
       };
       
       return Buffer.toArray(buffer);

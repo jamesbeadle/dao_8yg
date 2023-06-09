@@ -34,6 +34,14 @@ module Types {
         tokenId: Text;
     };
 
+    public type ListingDetails = {
+        locked: ?Nat;
+        price: Nat64;
+        seller: Principal;
+    };
+
+    public type Listing = (Nat32, ListingDetails);
+
     public type HomeDTO = {
         profit_icp: Nat64;
         profit_usd: Nat64;
