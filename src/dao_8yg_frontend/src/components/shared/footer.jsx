@@ -17,7 +17,7 @@ const MyFooter = () => {
             <a href="https://twitter.com/8YearsGang" target="_blank" rel="noopener noreferrer">
               <img src={TwitterIcon} alt="Twitter" className="social-icon" />
             </a>
-            <a href="https://t.co/2eYyCcQdwc" target="_blank" rel="noopener noreferrer">
+            <a href="https://discord.gg/JTvmbg2VJ7" target="_blank" rel="noopener noreferrer">
               <img src={DiscordIcon} alt="Discord" className="social-icon" />
             </a>
             <a href="https://oc.app/4xvtj-3aaaa-aaaaf-asq4a-cai/?ref=ohsck-sqaaa-aaaaf-asucq-cai" target="_blank" rel="noopener noreferrer">
