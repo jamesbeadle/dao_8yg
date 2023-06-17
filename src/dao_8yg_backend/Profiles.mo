@@ -32,9 +32,6 @@ module {
         };
 
         public func getProfile(principalName: Text) : ?T.Profile {
-            Debug.print(debug_show "getting profile");
-            Debug.print(debug_show principalName);
-            Debug.print(debug_show userProfiles);
             let foundProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
                 return profile.principal == principalName;
             });

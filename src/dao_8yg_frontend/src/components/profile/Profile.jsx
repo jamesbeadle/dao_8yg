@@ -62,9 +62,12 @@ const Profile = () => {
     const userProfile = await backend.getProfilePageDTO();
     setProfile(userProfile);
 
-    if (userProfile.profilePicture && userProfile.profilePicture.size > 0) {
-      const blobUrl = URL.createObjectURL(userProfile.profilePicture);
+    if (userProfile.profilePicture && userProfile.profilePicture.length > 0) {
+     
+      const blob = new Blob([userProfile.profilePicture]);
+      const blobUrl = URL.createObjectURL(blob);
       setProfilePicSrc(blobUrl);
+
     } else {
       setProfilePicSrc(ProfileImage);
     }
@@ -110,7 +113,7 @@ const Profile = () => {
                 <p><small>Voting Power</small></p>
               </Col>
               <Col className="text-center">
-                <h2 className='numerical-text'>{Number(profile.airdropShare / 100).toFixed(4)}%</h2>
+                <h2 className='numerical-text'>{Number(profile.airdropShare).toFixed(3)}%</h2>
                 <p><small>Airdrop Share</small></p>
               </Col>
             </Row>
@@ -126,8 +129,7 @@ const Profile = () => {
             </Row>
 
             <Row className="mt-2 justify-content-center">
-                <Button className="mr-2" variant="primary">Deposit</Button>
-                <Button className="ml-2" variant="primary">Withdraw</Button>
+                <Button variant="primary" disabled>Withdraw</Button>
             </Row>
 
             <Row className="mt-4 justify-content-center">

@@ -227,14 +227,16 @@ actor Self {
       totalVotingPower := totalVotingPower + Nat16.fromNat(Nat8.toNat(votingNFTs[i].votingPower));
     };
 
+    if(totalVotingPower >= 20){
+      let aNat: Nat = Prim.nat16ToNat(totalVotingPower);
+      let bNat: Nat = Prim.nat16ToNat(daoNFTsInstance.totalVotingPower);
 
-    let aNat: Nat = Prim.nat16ToNat(totalVotingPower);
-    let bNat: Nat = Prim.nat16ToNat(daoNFTsInstance.totalVotingPower);
+      let aFloat: Float = Float.fromInt(aNat);
+      let bFloat: Float = Float.fromInt(bNat);
 
-    let aFloat: Float = Float.fromInt(aNat);
-    let bFloat: Float = Float.fromInt(bNat);
-
-    airdropShare := aFloat / bFloat;
+      airdropShare := (aFloat / bFloat) * 100;
+    };
+    
 
     //TO Implement on first Airdrop:
     //set earnings
