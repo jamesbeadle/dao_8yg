@@ -5,6 +5,8 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Account "./Account";
 import Debug "mo:base/Debug";
+import Blob "mo:base/Blob";
+import Text "mo:base/Text";
 
 module {
 
@@ -21,8 +23,10 @@ module {
                 return {
                     principal = profile.principal;
                     depositAddress = profile.depositAddress;
-                    withdrawalAddress = profile.withdrawalAddress; 
                     disclaimerAccepted = profile.disclaimerAccepted;
+                    username = profile.username;
+                    profilePicture = Blob.fromArray([]);
+                    withdrawalAddress = "";
                 };
             }));
         };
@@ -41,13 +45,15 @@ module {
             };
         };
 
-        public func createProfile(principalName: Text, withdrawalAddress: Text, depositAddress: Account.AccountIdentifier, disclaimerAccepted: Bool) : () {
+        public func createProfile(principalName: Text, depositAddress: Account.AccountIdentifier, disclaimerAccepted: Bool) : () {
             
             let updatedProfile: T.Profile = {
                 principal = principalName;
-                withdrawalAddress = withdrawalAddress;
                 depositAddress = depositAddress;
                 disclaimerAccepted = disclaimerAccepted;
+                username = principalName;
+                profilePicture = Blob.fromArray([]);
+                withdrawalAddress = "";
             };
             
             let existingProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
@@ -64,38 +70,6 @@ module {
             };
         };
 
-        public func updateWithdrawalAddress(principalName: Text, withdrawalAddress: Text) : Result.Result<(), T.Error> {
-            
-            let existingProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
-                return profile.principal == principalName;
-            });
-
-            switch (existingProfile) {
-                case (null) { 
-                    return #err(#NotFound);
-                };
-                case (?existingProfile) {
-
-                    if(existingProfile.withdrawalAddress == withdrawalAddress){
-                        return #ok(());
-                    };
-            
-                    let updatedProfile: T.Profile = {
-                        principal = existingProfile.principal;
-                        withdrawalAddress = withdrawalAddress;
-                        depositAddress = existingProfile.depositAddress;
-                        disclaimerAccepted = existingProfile.disclaimerAccepted;
-                    };
-
-                    userProfiles := List.map<T.Profile, T.Profile>(userProfiles, func (profile: T.Profile): T.Profile {
-                        if (profile.principal == principalName) { updatedProfile } else { profile }
-                    });
-
-                    return #ok(());
-                };
-            };
-        };
-
         public func acceptDisclaimer(principalName: Text) : Result.Result<(), T.Error> {
             
             let existingProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
@@ -109,9 +83,11 @@ module {
 
                     let updatedProfile: T.Profile = {
                         principal = existingProfile.principal;
-                        withdrawalAddress = existingProfile.withdrawalAddress;
                         depositAddress = existingProfile.depositAddress;
                         disclaimerAccepted = true;
+                        username = existingProfile.username;
+                        profilePicture = existingProfile.profilePicture;
+                        withdrawalAddress = "";
                     };
 
                     userProfiles := List.map<T.Profile, T.Profile>(userProfiles, func (profile: T.Profile): T.Profile {
@@ -135,6 +111,106 @@ module {
                 };
             }
             
+        };
+
+        public func updateUsername(principalName: Text, username: Text) : Result.Result<(), T.Error> {
+            
+            let existingProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
+                return profile.principal == principalName;
+            });
+
+            switch (existingProfile) {
+                case (null) { 
+                    return #err(#NotFound);
+                };
+                case (?existingProfile) {
+
+                    if(existingProfile.username == username){
+                        return #ok(());
+                    };
+            
+                    let updatedProfile: T.Profile = {
+                        principal = existingProfile.principal;
+                        username = username;
+                        depositAddress = existingProfile.depositAddress;
+                        disclaimerAccepted = existingProfile.disclaimerAccepted;
+                        profilePicture = existingProfile.profilePicture;
+                        withdrawalAddress = "";
+                    };
+
+                    let nameValid = isUsernameValid(updatedProfile.username);
+                    if(not nameValid){
+                        return #err(#NotAllowed);
+                    };
+
+                    userProfiles := List.map<T.Profile, T.Profile>(userProfiles, func (profile: T.Profile): T.Profile {
+                        if (profile.principal == principalName) { updatedProfile } else { profile }
+                    });
+
+                    return #ok(());
+                };
+            };
+        };
+    
+        public func isUsernameValid(username: Text) : Bool {
+            
+            if (Text.size(username) < 3 or Text.size(username) > 20) {
+                return false;
+            };
+
+            let isAlphanumeric = func (s: Text): Bool {
+                let chars = Text.toIter(s);
+                for (c in chars) {
+                    if (not((c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or (c >= '0' and c <= '9'))) {
+                        return false;
+                    };
+                };
+                return true;
+            };
+
+            if (not isAlphanumeric(username)) {
+                return false;
+            };
+
+            let foundProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
+                return profile.username == username;
+            });
+
+            if(foundProfile != null){
+                return false;
+            };
+
+            return true;
+        };
+
+        public func updateProfilePicture(principalName: Text, profilePicture: Blob) : Result.Result<(), T.Error> {
+            
+            let existingProfile = List.find<T.Profile>(userProfiles, func (profile: T.Profile): Bool {
+                return profile.principal == principalName;
+            });
+
+            switch (existingProfile) {
+                case (null) { 
+                    return #err(#NotFound);
+                };
+                case (?existingProfile) {
+
+                    let updatedProfile: T.Profile = {
+                        principal = existingProfile.principal;
+                        username = existingProfile.username;
+                        depositAddress = existingProfile.depositAddress;
+                        disclaimerAccepted = existingProfile.disclaimerAccepted;
+                        profilePicture = profilePicture;
+                        withdrawalAddress = "";
+                    };
+
+                    userProfiles := List.map<T.Profile, T.Profile>(userProfiles, func (profile: T.Profile): T.Profile {
+                        if (profile.principal == principalName) { updatedProfile } else { profile }
+                    });
+
+                    return #ok(());
+                };
+            };
         };
     }
 }

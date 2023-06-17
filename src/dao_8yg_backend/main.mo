@@ -10,6 +10,15 @@ import Profiles "./Profiles";
 import Blob "mo:base/Blob";
 import Account "./Account";
 import DAONFTs "./DAONFTs";
+import DTO "./dtos";
+import Iter "mo:base/Iter";
+import Nat16 "mo:base/Nat16";
+import Nat8 "mo:base/Nat8";
+import Float "mo:base/Float";
+import Int16 "mo:base/Int16";
+import Int "mo:base/Int";
+import Nat "mo:base/Nat";
+import Prim "mo:prim";
 
 actor Self {
 
@@ -148,14 +157,12 @@ actor Self {
     assert not Principal.isAnonymous(caller);
     let principalName = Principal.toText(caller);
     var depositAddress = Blob.fromArray([]);
-    var withdrawalAddress = "";
+    var username = "";
     var disclaimerAccepted = false;
     var profile = profilesInstance.getProfile(Principal.toText(caller));
     
     if(profile == null){
-      Debug.print(debug_show "create profile");
-      profilesInstance.createProfile(Principal.toText(caller), "", getUserDepositAccount(caller), false);
-      Debug.print(debug_show "get profile");
+      profilesInstance.createProfile(Principal.toText(caller), getUserDepositAccount(caller), false);
       profile := profilesInstance.getProfile(Principal.toText(caller));
     };
     
@@ -163,26 +170,112 @@ actor Self {
       case (null){};
       case (?p){
         depositAddress := p.depositAddress;
-        withdrawalAddress := p.withdrawalAddress;
         disclaimerAccepted := p.disclaimerAccepted;
+        username := p.username;
       };
     };
 
     let profileDTO: T.Profile = {
       principal = principalName;
       depositAddress = depositAddress;
-      withdrawalAddress = withdrawalAddress;
       disclaimerAccepted = disclaimerAccepted;
+      username = username;
+      profilePicture = Blob.fromArray([]);
+      withdrawalAddress = "";
     };
-
-  
-    Debug.print(debug_show "return profile");
-    Debug.print(debug_show profileDTO);
 
     return profileDTO;
     
   };
+
   
+
+  public shared ({caller}) func getProfilePageDTO() : async DTO.ProfileDTO {
+    assert not Principal.isAnonymous(caller);
+    let principalName = Principal.toText(caller);
+    
+    var username = "";
+    var highestNFTRarity: Nat8 = 0;
+    var totalVotingPower: Nat16 = 0;
+    var airdropShare: Float = 0;
+    var earnings: Nat64 = 0;
+    var balance: Nat64 = 0;
+    var depositAddress = Blob.fromArray([]);
+    var profilePicture = Blob.fromArray([]);
+    
+    var profile = profilesInstance.getProfile(principalName);
+    
+    if(profile == null){
+      profilesInstance.createProfile(Principal.toText(caller), getUserDepositAccount(caller), false);
+      profile := profilesInstance.getProfile(Principal.toText(caller));
+    };
+    
+    switch(profile){
+      case (null){};
+      case (?p){
+        depositAddress := p.depositAddress;
+        username := p.username;
+        profilePicture := p.profilePicture;
+      };
+    };
+
+    let votingNFTs = await nftWalletInstance.getVotingNFTs(caller, List.fromArray(daoNFTsInstance.nfts));
+    for (i in Iter.range(0, votingNFTs.size() - 1)) {
+      if (votingNFTs[i].rarity > highestNFTRarity) {
+        highestNFTRarity := votingNFTs[i].rarity;
+      };
+      totalVotingPower := totalVotingPower + Nat16.fromNat(Nat8.toNat(votingNFTs[i].votingPower));
+    };
+
+
+    let aNat: Nat = Prim.nat16ToNat(totalVotingPower);
+    let bNat: Nat = Prim.nat16ToNat(daoNFTsInstance.totalVotingPower);
+
+    let aFloat: Float = Float.fromInt(aNat);
+    let bFloat: Float = Float.fromInt(bNat);
+
+    airdropShare := aFloat / bFloat;
+
+    //TO Implement on first Airdrop:
+    //set earnings
+    //set balance
+
+    let profileDTO: DTO.ProfileDTO = {
+      depositAddress = depositAddress;
+      username = username;
+      highestNFTRarity = highestNFTRarity;
+      totalVotingPower = totalVotingPower;
+      airdropShare = airdropShare;
+      principal = principalName;
+      earnings = earnings;
+      balance = balance;
+      profilePicture = profilePicture;
+    };
+
+    return profileDTO;
+  };
+
+  public shared ({caller}) func updateUsername(username :Text) : async Result.Result<(), T.Error> {
+    assert not Principal.isAnonymous(caller);
+    return profilesInstance.updateUsername(Principal.toText(caller), username);
+  };
+
+  public shared query ({caller}) func isUsernameValid(username: Text) : async Bool {
+    assert not Principal.isAnonymous(caller);
+    return profilesInstance.isUsernameValid(username);
+  };
+
+  public shared ({caller}) func updateProfilePicture(profilePicture :Blob) : async Result.Result<(), T.Error> {
+    assert not Principal.isAnonymous(caller);
+
+    let sizeInKB = Array.size(Blob.toArray(profilePicture)) / 1024;
+    if (sizeInKB > 4000) {
+      return #err(#NotAllowed);
+    };
+
+    return profilesInstance.updateProfilePicture(Principal.toText(caller), profilePicture);
+  };
+ 
   private func getUserDepositAccount(caller: Principal) : Account.AccountIdentifier {
     Account.accountIdentifier(Principal.fromActor(Self), Account.principalToSubaccount(caller))
   };
@@ -190,11 +283,6 @@ actor Self {
   public shared ({caller}) func acceptDisclaimer() : async Result.Result<(), T.Error> {
     assert not Principal.isAnonymous(caller);
     return profilesInstance.acceptDisclaimer(Principal.toText(caller));
-  };
-
-  public shared ({caller}) func updateWithdrawalAddress(withdrawalAddress :Text) : async Result.Result<(), T.Error> {
-    assert not Principal.isAnonymous(caller);
-    return profilesInstance.updateWithdrawalAddress(Principal.toText(caller), withdrawalAddress);
   };
 
   public shared ({caller}) func getProfiles() : async [T.Profile] {

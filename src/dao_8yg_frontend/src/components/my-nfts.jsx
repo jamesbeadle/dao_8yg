@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Spinner, Card, CardDeck } from 'react-bootstrap';
-import LogoImage from '../../assets/logo.png';
+import { Container, Row, Col, Spinner, Card } from 'react-bootstrap';
 import { useConnect, useCanister } from "@connect2ic/react";
 
-const Profile = () => {
+const MyNFTs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userPrincipal, setUserPrincipal] = useState('');
   const [nfts, setNfts] = useState([]);
@@ -59,7 +58,7 @@ const Profile = () => {
             <Col md={12}>
                 <Row>
                     {nfts.map((nft) => (
-                         <Col md={4} key={nft.id}>
+                         <Col sm={3} key={nft.id}>
                             <Card className="mb-4">
                                 <img
                                     src={`https://${nft.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${nft.tokenId}`}
@@ -85,4 +84,4 @@ const Profile = () => {
 
 };
 
-export default Profile;
+export default MyNFTs;

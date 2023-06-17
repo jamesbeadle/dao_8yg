@@ -315,13 +315,14 @@ module {
         });
 
         switch(votingNFT){
-          case (null) { return { id = 0; votingPower = 0; canisterId = ""; tokenId = ""; } };
+          case (null) { return { id = 0; votingPower = 0; canisterId = ""; tokenId = ""; rarity = 0; } };
           case (?vnft){
             return {
               id = nft.tokenIndex + 1; 
               votingPower = vnft.votingPower; 
               canisterId = vnft.canisterId; 
               tokenId = "";  
+              rarity = vnft.rarity;
             };
           };
         };
@@ -341,6 +342,7 @@ module {
             votingPower = votingNFTs[i].votingPower;
             canisterId =  votingNFTs[i].canisterId;
             tokenId = await computeExtTokenIdentifier(Principal.fromText(votingNFTs[i].canisterId), votingNFTs[i].id - 1);
+            rarity = votingNFTs[i].rarity;
           };
           buffer.add(nftWithToken);
         };

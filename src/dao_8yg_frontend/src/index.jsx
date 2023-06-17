@@ -11,7 +11,7 @@ import BannerTop from "./components/shared/banner";
 import Admin from "./components/admin/Admin";
 import Proposals from "./components/Proposals";
 import Tokenomics from "./components/Tokenomics";
-import Profile from "./components/Profile";
+import Profile from "./components/profile/Profile";
 
 import { StoicWallet } from "@connect2ic/core/providers/stoic-wallet";
 import { InfinityWallet } from "@connect2ic/core/providers/infinity-wallet";

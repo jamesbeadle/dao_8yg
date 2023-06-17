@@ -60,14 +60,17 @@ module Types {
     }; 
 
     public type Profile = {
+        username: Text;
         principal: Text;
         depositAddress: Blob;
-        withdrawalAddress: Text;
         disclaimerAccepted: Bool;
+        profilePicture: Blob;
+        withdrawalAddress: Text;
     };
 
     public type VotingNFT = {
         id: Nat32;
+        rarity: Nat8;
         votingPower: Nat8;
         canisterId: Text;
         tokenId: Text;
