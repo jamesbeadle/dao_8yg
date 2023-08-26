@@ -57,7 +57,9 @@ const MyNavbar = () => {
         </Navbar.Brand>  
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
-        
+          <Nav.Link as={Link} to="/Roadmap" onClick={() => setExpanded(false)} className="nav-link">
+            Roadmap
+          </Nav.Link>
           {isConnected && isAdmin && 
             <Nav.Link as={Link} to="/Admin" onClick={() => setExpanded(false)} className="nav-link">
               Admin

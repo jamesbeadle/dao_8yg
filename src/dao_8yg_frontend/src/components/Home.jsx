@@ -128,22 +128,21 @@ const Home = () => {
               <Col md={12}>
                 <h1>8 Years Gang DAO</h1>
                 
-                <p className='mt-4 mb-4'><b>1. Stake Your 8 Years Gang NFTs</b>
+                <p className='mt-4 mb-4'><b>1. Hold Your Unlisted 8 Years Gang NFTs</b>
                   <br /><br />
-                  By staking your 8 Years Gang NFTs here, you can participate in proposals or start a new one. There is no minimum duration, which means you can unstake or restake your NFTs at any time.
+                  By holding your unlisted 8 Years Gang NFTs in your wallet, you can participate in proposals or start a new one. There is no minimum duration, which means you can unstake or restake your NFTs at any time.
                 </p>
                 
                 <p className='mt-4 mb-4'><b>2. Participate in Proposals or Start a New Proposal</b>
                   <br /><br />
-                  Your voting power is determined based on the number of 8 Years Gang NFTs you have staked. The higher your voting power, the greater the weight of your vote in each proposal.
+                  Your voting power is determined based on the number of unlisted 8 Years Gang NFTs you hold. The higher your voting power, the greater the weight of your vote in each proposal.
                 </p>
                 
                 <p className='mt-4 mb-4'><b>3 & 4. Earn $8YG Tokens</b>
                   <br /><br />
                   Once the DAO successfully sells an NFT and generates revenue, the smart contract uses these earnings to purchase $8YG Tokens and distributes them to all participants who took part in the proposal. The distribution of tokens takes into account the voting power of each individual member who participated. The higher your voting power, the greater your earnings.
                   <br /><br />
-                  Staking your NFTs allows you to actively participate in shaping the direction of the DAO and be rewarded with $8YG Tokens based on your contribution. It's an opportunity to engage in decision-making and benefit from the success of the DAO's activities.
-
+                  Holding your unlisted NFTs allows you to actively participate in shaping the direction of the DAO and be rewarded with $8YG Tokens based on your contribution. It's an opportunity to engage in decision-making and benefit from the success of the DAO's activities.
                 </p>
                 {isConnected && 
                   <Button className="btn btn-sm mt-3 mb-4" onClick={() => setShowCheckWalletModal(true)}>View DAO NFT Wallet</Button>

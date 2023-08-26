@@ -25,6 +25,7 @@ console.log(style)
 
 import * as backend from '../../declarations/dao_8yg_backend';
 import Disclaimer from "./components/Disclaimer";
+import Roadmap from "./components/Roadmap";
 
 
 const PrivateWindowFallback = () => {
@@ -88,6 +89,7 @@ const App = () => {
             <Route path="/Tokenomics" element={<Tokenomics />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="/Disclaimer" element={<Disclaimer />} />
+            <Route path="/Roadmap" element={<Roadmap />} />
             </Routes>
           <MyFooter />
         </div>
