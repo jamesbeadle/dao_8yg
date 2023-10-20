@@ -15,10 +15,15 @@
 }
 
 body {
-  background: linear-gradient(to bottom, #000000, #150333);
-  transition: background ease-in-out 300ms, color ease-in-out 150ms, padding ease-in-out 150ms;
-  color: whitesmoke !important;
   font-family: 'Play', sans-serif !important;
+  color: white !important;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
+  margin: 0;
 }
 
 .navbar-toggler-icon{
@@ -26,8 +31,8 @@ body {
 }
 
 .card{
-  background: linear-gradient(to bottom, #F3E77B, #150333);
-  color: #150333 !important;
+  background-color: #150333 !important;
+  padding: 1rem;
 }
 
 .card-header{

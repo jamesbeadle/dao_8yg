@@ -16,12 +16,6 @@
         "dist/dao_8yg_frontend/"
       ],
       "type": "assets"
-    },
-    "token_canister": {
-      "type": "custom",
-      "wasm": "src/token-canister/icrc1-ledger.wasm",
-      "candid": "src/token-canister/icrc1-ledger.did",
-      "build": ""
     }
   },
   "defaults": {

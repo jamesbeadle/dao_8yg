@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Spinner, Button, Image, Alert } from 'react-bootstrap';
-import { useConnect, useCanister } from "@connect2ic/react";
 import ProfileImage from '../../../assets/profile_placeholder.png';
 import { EditIcon, StarIcon, CopyIcon } from '../../icons';
 import UpdateUsernameModal from './update-username-modal';

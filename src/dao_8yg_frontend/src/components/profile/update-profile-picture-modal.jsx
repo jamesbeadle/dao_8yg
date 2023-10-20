@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Spinner } from 'react-bootstrap';
-import { useCanister } from "@connect2ic/react";
 
 const UpdateProfilePictureModal = ({ show, onHide }) => {
 

@@ -1,55 +1,22 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useContext, useEffect  } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 import { Link, useNavigate } from "react-router-dom";
-import { ConnectButton, useConnect, useCanister } from "@connect2ic/react";
+
 
 const MyNavbar = () => {
-
+  const { isAdmin, isAuthenticated, login, logout, identity } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [profile, setProfile] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const { isConnected } = useConnect();
-  const [backend] = useCanister("backend");
-
   useEffect(() => {
-    if (!isConnected || !backend) {
-      return;
+    if (!isAuthenticated) {
+      navigate("/");
     }
 
-    const fetchData = async () => {
-      let symbolKey = Symbol.for('ic-agent-metadata');
-      let keysCount = Object.keys(await backend[symbolKey].config.agent._identity).length > 0;
-      
-      if(keysCount == 0){
-        return;
-      }
-
-      let profile = await backend.getProfile();
-      setProfile(profile);
-
-      if(!profile.disclaimerAccepted){
-        navigate('/Disclaimer');
-      }
-
-      let admin = await backend.isAdmin();
-      setIsAdmin(admin);
-    };
-    fetchData();
-
-  }, [isConnected, backend]);
-
-  useEffect(() => {
-    if(profile == null){
-      return;
-    }
-    
-    if(!profile.disclaimerAccepted){
-      navigate('/disclaimer');
-    }
-  }, [profile])
+  }, [isAuthenticated]);
 
   return (
     <Navbar expand="lg">
@@ -57,24 +24,23 @@ const MyNavbar = () => {
         </Navbar.Brand>  
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
-          <Nav.Link as={Link} to="/Roadmap" onClick={() => setExpanded(false)} className="nav-link">
-            Roadmap
-          </Nav.Link>
-          {isConnected && isAdmin && 
+        
+          {isAuthenticated && isAdmin && 
             <Nav.Link as={Link} to="/Admin" onClick={() => setExpanded(false)} className="nav-link">
               Admin
             </Nav.Link>
           }
           
-          {isConnected && (
+          {isAuthenticated ? (
             <>
               <Nav.Link as={Link} to="/Profile" onClick={() => setExpanded(false)} className="nav-link">
                 Profile
               </Nav.Link>
+              <Button onClick={() => { logout(); setExpanded(false); }}>Disconnect</Button>
             </>
+          ) : (
+            <Button onClick={() => { login(); setExpanded(false); }}>Connect</Button>
           )}
-
-          <ConnectButton />
         </Navbar.Collapse>
     </Navbar>
   );

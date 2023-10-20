@@ -121,7 +121,6 @@ module.exports = {
       cache: false,
     }),
     new webpack.EnvironmentPlugin({
-      NODE_ENV: process.env.NODE_ENV,
       II_URL: internetIdentityUrl,
       DFX_NETWORK: network,
       ...canisterEnvVariables,

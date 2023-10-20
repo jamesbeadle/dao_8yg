@@ -3,7 +3,6 @@ import { Container, Spinner} from 'react-bootstrap';
 import LogoImage from '../../../assets/logo.png';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Collections from './Collections';
 
 const Admin = () => {
   
@@ -26,7 +25,6 @@ const Admin = () => {
       <Container className="flex-grow-1 my-5">
         <Tabs defaultActiveKey="collections" id="uncontrolled-tab-example" className="mb-3">
           <Tab eventKey="collections" title="Collections">
-            <Collections />
           </Tab>
           <Tab eventKey="listed" title="NFT Listings" disabled>
           </Tab>

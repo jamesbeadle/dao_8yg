@@ -9,3 +9,9 @@ $primary: #807A00; // Your custom primary color
 
  
 @import '~bootstrap/scss/bootstrap';
+
+.vertical-flex{
+    align-items: center;
+    display: flex;
+    vertical-align: middle;
+}

@@ -1,41 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
-import { useConnect, useCanister } from "@connect2ic/react";
 
 const VotingPower = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [leaderboard, setLeaderboard] = useState([]);
-  const { isConnected } = useConnect();
-  const [backend] = useCanister("backend");
-
-  useEffect(() => {
-    if (!isConnected || !backend) {
-      return;
-    }
-
-    const fetchData = async () => {
-
-      let symbolKey = Symbol.for('ic-agent-metadata');
-      let keysCount = Object.keys(await backend[symbolKey].config.agent._identity).length > 0;
-      
-      if(keysCount == 0){
-        return;
-      }
-
-      const fetchedLeaderboard = await backend.getVotingPowerLeaderboard();
-      
-      const leaderboardWithProfileIcons = fetchedLeaderboard.map(entry => {
-        const profileIconURL = URL.createObjectURL(entry.profileIconBlob);
-        return { ...entry, profileIcon: profileIconURL };
-      });
-
-      setLeaderboard(leaderboardWithProfileIcons);
-      
-      setIsLoading(false);
-    };
-    fetchData();
-
-  }, [isConnected, backend]);
 
   return (
       isLoading ? (

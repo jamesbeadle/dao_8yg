@@ -1,7 +1,9 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { createRoot } from 'react-dom/client';
+import { AuthProvider } from "./contexts/AuthContext";
 import '../assets/custom.scss';
+
 import Home from "./components/Home";
 import Logo from '../assets/logo.png';
 import MyNavbar from './components/shared/navbar';
@@ -12,21 +14,8 @@ import Admin from "./components/admin/Admin";
 import Proposals from "./components/Proposals";
 import Tokenomics from "./components/Tokenomics";
 import Profile from "./components/profile/Profile";
-
-import { StoicWallet } from "@connect2ic/core/providers/stoic-wallet";
-import { InfinityWallet } from "@connect2ic/core/providers/infinity-wallet";
-import { PlugWallet } from "@connect2ic/core/providers/plug-wallet";
-
-import { createClient } from "@connect2ic/core"
-import { ConnectDialog, Connect2ICProvider } from "@connect2ic/react"
-
-import style from "@connect2ic/core/style.css"
-console.log(style)
-
-import * as backend from '../../declarations/dao_8yg_backend';
 import Disclaimer from "./components/Disclaimer";
 import Roadmap from "./components/Roadmap";
-
 
 const PrivateWindowFallback = () => {
   return (
@@ -75,10 +64,8 @@ const App = () => {
   }
 
   return (
+    <AuthProvider>
       <Router>
-        <ConnectDialog />
-        <BannerTop />
-      
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
           <MyNavbar />
           <Routes>
@@ -94,23 +81,11 @@ const App = () => {
           <MyFooter />
         </div>
       </Router>   
+    </AuthProvider> 
   );
 };
 
-const client = createClient({
-  canisters: {
-    backend
-  },
-  providers: [
-    new StoicWallet(),
-    new InfinityWallet(),
-    new PlugWallet(),
-  ]
-})
-
 const root = document.getElementById("app");
 createRoot(root).render(
-  <Connect2ICProvider client={client}>
     <App />
-  </Connect2ICProvider>
 );

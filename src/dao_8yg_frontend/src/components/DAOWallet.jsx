@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Spinner, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
-import { useConnect, useCanister } from "@connect2ic/react";
+import { dao_8yg_backend as backend } from '../../../declarations/dao_8yg_backend';
+import { AuthContext } from "../contexts/AuthContext";
+import { Actor } from "@dfinity/agent";
+
 
 const DAOWallet = () => {
   
-  const { isConnected } = useConnect();
-  const [backend] = useCanister("backend");
-
+  const { identity } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [collections, setCollections] = useState(null);
   const [viewData, setViewData] = useState(null);
@@ -15,36 +16,25 @@ const DAOWallet = () => {
   const count = 9;
 
   const fetchCollections = async () => {
+    Actor.agentOf(backend).replaceIdentity(identity);
+    console.log(await backend.getAccountId());
     var collections = await backend.getCollections();
     setCollections(collections);
     setSelectedCollection(collections[0]);
   };
 
   const fetchNFTs = async () => {
+    Actor.agentOf(backend).replaceIdentity(identity);
     var nftWallet = await backend.getCollectionNFTs(Number(selectedCollection.id), Number(page), Number(count));
     setViewData(nftWallet);
   };
   
   useEffect(() => {
     const fetchData = async () => {
-      let symbolKey = Symbol.for('ic-agent-metadata');
-      let keysCount = Object.keys(await backend[symbolKey].config.agent._identity).length > 0;
-      
-      if(keysCount == 0){
-        return;
-      }
-
-      let profile = await backend.getProfile();
-      
-      if(!profile.disclaimerAccepted){
-        navigate('/Disclaimer');
-        return;
-      }
-
       await fetchCollections();
     };
     fetchData();
-  }, [isConnected, backend]);
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);

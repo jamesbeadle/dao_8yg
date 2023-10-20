@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Spinner, Form, Button} from 'react-bootstrap';
-import LogoImage from '../../assets/logo.png';
-import { useConnect, useCanister } from "@connect2ic/react";
 import { useNavigate } from "react-router-dom";
 
 const Disclaimer = () => {
   
   const [isLoading, setIsLoading] = useState(true);
   const [accepted, setAccepted] = useState(false);
-  const { isConnected } = useConnect();
-  const [backend] = useCanister("backend");
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -25,7 +21,6 @@ const Disclaimer = () => {
   }
 
   const acceptDisclaimer = async (e) => {
-    await backend.acceptDisclaimer();
     navigate('/');
   };
 
