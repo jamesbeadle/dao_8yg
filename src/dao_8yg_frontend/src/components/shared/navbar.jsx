@@ -19,11 +19,10 @@ const MyNavbar = () => {
   }, [isAuthenticated]);
 
   return (
-    <Navbar expand="lg">
-      <Navbar.Brand href="/">
-        </Navbar.Brand>  
+    <Navbar className="p-0" expand="lg">
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end">
+        <Navbar.Collapse  id="responsive-navbar-nav" className="justify-content-end custom-navbar">
+          <img className="w-100" src='banner.png' alt="banner" />
         
           {isAuthenticated && isAdmin && 
             <Nav.Link as={Link} to="/Admin" onClick={() => setExpanded(false)} className="nav-link">
@@ -39,7 +38,7 @@ const MyNavbar = () => {
               <Button onClick={() => { logout(); setExpanded(false); }}>Disconnect</Button>
             </>
           ) : (
-            <Button onClick={() => { login(); setExpanded(false); }}>Connect</Button>
+            <Button className="centered-button" disabled onClick={() => { login(); setExpanded(false); }}>Connect</Button>
           )}
         </Navbar.Collapse>
     </Navbar>

@@ -17,14 +17,46 @@
 body {
   font-family: 'Play', sans-serif !important;
   color: white !important;
-  background-image: url('background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: #150333 !important;
   height: 100vh;
   margin: 0;
 }
+
+.custom-navbar{
+  height: 100px;
+  overflow: hidden;
+}
+
+.image-container {
+  position: relative;
+}
+
+.centered-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;  /* Ensures the button is displayed over the image */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .navbar-toggler-icon{
   color: whitesmoke !important;
@@ -32,7 +64,8 @@ body {
 
 .card{
   background-color: #150333 !important;
-  padding: 1rem;
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
 .card-header{
